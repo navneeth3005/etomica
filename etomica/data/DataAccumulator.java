@@ -4,6 +4,7 @@
  */
 package etomica.data;
 
+import etomica.Data;
 import etomica.DataSink;
 import etomica.DataSource;
 import etomica.Default;
@@ -41,7 +42,7 @@ public abstract class DataAccumulator extends DataPipe implements DataSource {
 	/* (non-Javadoc)
 	 * @see etomica.Integrator.IntervalListener#intervalAction(etomica.Integrator.IntervalEvent)
 	 */
-	public void putData(double[] newData) {
+	public void putData(Data newData) {
         if(!active) return;
         addData(newData);
 		if (--putCount == 0) {
@@ -52,7 +53,7 @@ public abstract class DataAccumulator extends DataPipe implements DataSource {
         }
 	}
 
-    protected abstract void addData(double[] data);
+    protected abstract void addData(Data data);
     
     public abstract int getDataLength();
     
