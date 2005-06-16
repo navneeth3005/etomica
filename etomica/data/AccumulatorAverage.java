@@ -5,6 +5,7 @@
 package etomica.data;
 
 import etomica.Constants;
+import etomica.Data;
 import etomica.DataSink;
 import etomica.DataTranslator;
 import etomica.Default;
@@ -18,11 +19,8 @@ public class AccumulatorAverage extends DataAccumulator {
 	public AccumulatorAverage() {
 		super();
         allData = new double[getDataLength()][]; 
-		setNData(0);
 		setBlockSize(Default.BLOCK_SIZE);
-        setDimension(Dimension.UNDEFINED);
         setPushInterval(100);
-        reset();
 	}
 	
 	public void setBlockSize(int blockSize) {
@@ -38,15 +36,17 @@ public class AccumulatorAverage extends DataAccumulator {
      * of the given data values is NaN, method returns with no 
      * effect on accumulation sums.
      */
-    public void addData(double[] value) {
-    	if(value.length != nData) setNData(value.length);
-        for(int i=0; i<nData; i++) if(Double.isNaN(value[i])) return;
-    	for(int i=nDataMinus1; i>=0; i--) {
-            double v = value[i];
-    		mostRecent[i] = v;
-			blockSum[i] += v;
-			blockSumSq[i] += v*v;
-    	}
+    public void addData(Data data) {
+        DataArithmetic value = (DataArithmetic)data;
+        if(value.isNaN()) return;
+        if (mostRecent == null) {
+            initialize(data);
+        }
+  		mostRecent.E(data);
+  	    blockSum.PE(value);
+        work.E(data);
+        work.TE(value);
+        blockSumSq.PE(work);
 		if(--blockCountDown == 0) {//count down to zero to determine completion of block
 		    doBlockSum();
         }
@@ -55,95 +55,84 @@ public class AccumulatorAverage extends DataAccumulator {
     protected void doBlockSum() {
         count++;
         blockCountDown = blockSize;
-        for(int i=nDataMinus1; i>=0; i--) {
-            blockSum[i] /= blockSize;//compute block average
-            sum[i] += blockSum[i];
-            sumSquare[i] += blockSum[i]*blockSum[i];
-            sumSquareBlock[i] += blockSumSq[i];
-            //reset blocks
-            mostRecentBlock[i] = blockSum[i];
-            blockSum[i] = 0.0;
-            blockSumSq[i] = 0.0;
-        }
+        blockSum.TE(1/(double)blockSize);//compute block average
+        sum.PE(blockSum);
+        work.E((Data)blockSum);
+        work.TE(blockSum);
+        sumSquare.PE(work);
+        sumSquareBlock.PE(blockSumSq);
+        //reset blocks
+        mostRecentBlock.E((Data)blockSum);
+        blockSum.E(0.0);
+        blockSumSq.E(0.0);
     }
     
-    public double[] getData() {
+    public Data getData() {
+        if (mostRecent == null) return null;
         int currentBlockCount = blockSize - blockCountDown;
         double countFraction = (double)currentBlockCount/(double)blockSize;
         double currentCount = count + countFraction;
-        if(count+currentBlockCount == 0) {
-            setNaN(data);
-        } else {
-            for(int i=0; i<nData; i++) {
-                double currentBlockAverage = blockSum[i]/currentBlockCount;
-                double avg;
-                if (countFraction > 0) {
-                    avg = (sum[i] + countFraction*currentBlockAverage)/currentCount;
-                }
-                else {
-                    avg = sum[i] / count;
-                }
-                double avgSquared = avg*avg;
-                double err = Math.sqrt((sumSquare[i]/count - (sum[i]*sum[i]/count)/count)/(count-1));
-                double stdev = Math.sqrt((sumSquareBlock[i]+blockSumSq[i])/(currentCount*blockSize) - avgSquared);
-                double mrBlock = (!Double.isNaN(mostRecentBlock[i])) ? mostRecentBlock[i] : currentBlockAverage;
-                data[0*nData+i] = mostRecent[i];
-                data[1*nData+i] = average[i] = avg;
-                data[2*nData+i] = error[i] = err;
-                data[3*nData+i] = standardDeviation[i] = stdev;
-                data[4*nData+i] = mrBlock;
-            }
+        if(count+currentBlockCount > 0) {
+//            double currentBlockAverage = blockSum[i]/currentBlockCount;
+//            if (countFraction > 0) {
+//                average = (sum[i] + countFraction*currentBlockAverage)/currentCount;
+//            }
+//            else {
+            average.E((Data)sum);
+            average.TE(1/(double)count);
+            work.E((Data)average);
+            work.TE(average);
+            error.E((Data)sumSquare);
+            error.TE(1/(double)count);
+            error.ME(work);
+            error.TE(1/(double)(count-1));
+            error.map(sqrt);
+            standardDeviation.E((Data)sumSquareBlock);
+            standardDeviation.PE(blockSumSq);
+            standardDeviation.TE(1/currentCount*blockSize);
+            standardDeviation.ME(work);
+            standardDeviation.map(sqrt);
+//            mrBlock = (!Double.isNaN(mostRecentBlock[i])) ? mostRecentBlock[i] : currentBlockAverage;
         }
-        return data;
+        return dataGroup;
     }
    
-    protected void setNaN(double[] x) {
-		for(int i=x.length-1; i>=0; i--) x[i] = Double.NaN;
-	}
-	protected void setZero(double[] x) {
-		for(int i=x.length-1; i>=0; i--) x[i] = 0.0;
-	}
-	        
 	/**
 	 * Resets all sums to zero
 	 */
     public void reset() {
         count = 0;
-        setZero(sum);
-        setZero(sumSquare);
-        setZero(sumSquareBlock);
-        setNaN(error);
+        sum.E(0);
+        sumSquare.E(0);
+        sumSquareBlock.E(0);
+        blockSum.E(0);
+        blockSumSq.E(0);
+        error.E(Double.NaN);
+        mostRecent.E(Double.NaN);
+        mostRecentBlock.E(Double.NaN);
+        average.E(Double.NaN);
+        standardDeviation.E(Double.NaN);
         blockCountDown = blockSize;
-        setZero(blockSum);
-        setZero(blockSumSq);
-        setNaN(mostRecent);
-        setNaN(mostRecentBlock);
     }
     
-    protected void setNData(int nData) {
-    	this.nData = nData;
-        translator = new DataTranslatorArray(getDataLength(),nData);
-        nDataMinus1 = nData-1;
-        data = new double[getDataLength()*nData];
-    	sum = redimension(nData, sum);
-    	sumSquare = redimension(nData, sumSquare);
-        sumSquareBlock = redimension(nData, sumSquareBlock);
-    	standardDeviation = redimension(nData, standardDeviation);
-    	average = redimension(nData, average);
-    	error = redimension(nData, error);
-    	blockSum = redimension(nData, blockSum);
-        blockSumSq = redimension(nData, blockSumSq);
-    	mostRecent = redimension(nData, mostRecent);
-    	mostRecentBlock = redimension(nData, mostRecentBlock);
-    	if(!saveOnRedimension) reset();
-        allData[0] = mostRecent;
-        allData[1] = average;
-        allData[2] = error;
-        allData[3] = standardDeviation;
-        allData[4] = mostRecentBlock;
+    protected void initialize(Data value) {
+        sum = (DataArithmetic)value.clone();
+        sumSquare = (DataArithmetic)value.clone();
+        sumSquareBlock = (DataArithmetic)value.clone();
+        standardDeviation = (DataArithmetic)value.clone();
+        average = (DataArithmetic)value.clone();
+        error = (DataArithmetic)value.clone();
+        blockSum = (DataArithmetic)value.clone();
+        blockSumSq = (DataArithmetic)value.clone();
+        mostRecent = (DataArithmetic)value.clone();
+        mostRecentBlock = (DataArithmetic)value.clone();
+        reset();
+        dataGroup = new DataGroup(value.getDataInfo(),new Data[]{(Data)mostRecent,
+                (Data)average,(Data)error,(Data)standardDeviation,(Data)mostRecentBlock});
+        
         for(int i=0; i<dataSinkList.length; i++) {
             if(dataSinkList[i] instanceof SinkWrapper) {
-                ((SinkWrapper)dataSinkList[i]).pusher.setNData(nData);
+                ((SinkWrapper)dataSinkList[i]).pusher.initialize(value);
             }
         }
     }
@@ -225,14 +214,14 @@ public class AccumulatorAverage extends DataAccumulator {
         return 5;
     }
 	
-    protected double[] sum, sumSquare, blockSum, blockSumSq, sumSquareBlock;
-    protected double[] mostRecent;
-    protected double[] mostRecentBlock;
-    protected double[] average, error, standardDeviation;
+    protected DataArithmetic sum, sumSquare, blockSum, blockSumSq, sumSquareBlock;
+    protected DataArithmetic mostRecent;
+    protected DataArithmetic mostRecentBlock;
+    protected DataArithmetic average, error, standardDeviation;
+    protected DataArithmetic work;
+    protected DataGroup dataGroup;
     protected int count, blockCountDown;
     protected int blockSize;
-    protected int nDataMinus1;
-    protected int nData;
     protected boolean saveOnRedimension = false;
     
     //array concatenating mostRecent, average, etc. for return by getData

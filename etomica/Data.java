@@ -13,7 +13,7 @@ package etomica;
  * History
  * Created on Jun 15, 2005 by kofke
  */
-public class Data implements Cloneable {
+public abstract class Data implements Cloneable {
 
     public Data(DataInfo dataInfo) {
         this.dataInfo = dataInfo;
@@ -25,6 +25,17 @@ public class Data implements Cloneable {
     public DataInfo getDataInfo() {
         return dataInfo;
     }
+    
+    public Object clone() {
+        try {
+            return super.clone();
+        }
+        catch (CloneNotSupportedException e) {
+            return null;
+        }
+    }
+    
+    public abstract void E(Data data);
     
     private final DataInfo dataInfo;
 }

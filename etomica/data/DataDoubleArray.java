@@ -1,14 +1,15 @@
 package etomica.data;
 
+import java.util.Arrays;
+
 import etomica.Data;
 import etomica.DataInfo;
 
 
 /**
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * Data object that wraps an array of doubles.
  *
- * @author David Kofke
+ * @author David Kofke and Andrew Schultz
  *
  */
 
@@ -22,40 +23,55 @@ public class DataDoubleArray extends Data implements DataArithmetic {
         super(dataInfo);
     }
 
-    public void E(DataArithmetic y) {
-        // TODO Auto-generated method stub
-
+    public void E(Data y) {
+        System.arraycopy(((DataDoubleArray)y).x, 0, x, 0, x.length);
     }
 
-    /* (non-Javadoc)
-     * @see etomica.data.DataArithmetic#PE(etomica.data.DataArithmetic)
-     */
     public void PE(DataArithmetic y) {
-        // TODO Auto-generated method stub
+        double[] yx = ((DataDoubleArray)y).x;
+        for(int i=0; i<x.length; i++) {
+            x[i] += yx[i];
+        }
 
     }
 
-    /* (non-Javadoc)
-     * @see etomica.data.DataArithmetic#ME(etomica.data.DataArithmetic)
-     */
     public void ME(DataArithmetic y) {
+        double[] yx = ((DataDoubleArray)y).x;
+        for(int i=0; i<x.length; i++) {
+            x[i] -= yx[i];
+        }
+    }
+
+    public void TE(DataArithmetic y) {
+        double[] yx = ((DataDoubleArray)y).x;
+        for(int i=0; i<x.length; i++) {
+            x[i] *= yx[i];
+        }
 
     }
 
-    /* (non-Javadoc)
-     * @see etomica.data.DataArithmetic#E(double)
-     */
+    public void DE(DataArithmetic y) {
+        double[] yx = ((DataDoubleArray)y).x;
+        for(int i=0; i<x.length; i++) {
+            x[i] /= yx[i];
+        }
+
+    }
+
     public void E(double y) {
-        // TODO Auto-generated method stub
-
+        Arrays.fill(x, y);
     }
 
-    /* (non-Javadoc)
-     * @see etomica.data.DataArithmetic#PE(double)
-     */
     public void PE(double y) {
-        // TODO Auto-generated method stub
+        for(int i=0; i<x.length; i++) {
+            x[i] += y;
+        }
+    }
 
+    public void TE(double y) {
+        for(int i=0; i<x.length; i++) {
+            x[i] *= y;
+        }
     }
 
     public void setLength(int n) {
@@ -66,5 +82,12 @@ public class DataDoubleArray extends Data implements DataArithmetic {
         return x;
     }
     
+    public boolean isNaN() {
+        for(int i=0; i<x.length; i++) {
+            if (Double.isNaN(x[i])) return true;
+        }
+        return false;
+    }
+
     private double[] x;
 }

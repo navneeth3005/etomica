@@ -1,5 +1,7 @@
 package etomica.data;
 
+import etomica.Data;
+
 
 /**
  * TODO To change the template for this generated type comment go to
@@ -14,9 +16,13 @@ package etomica.data;
  * Created on Jun 15, 2005 by kofke
  */
 public interface DataArithmetic {
-    public void E(DataArithmetic y);
+    public void E(Data y);
     public void PE(DataArithmetic y);
     public void ME(DataArithmetic y);
+    public void TE(DataArithmetic y);
+    public void DE(DataArithmetic y);
     public void E(double y);
     public void PE(double y);
+    public void TE(double y);
+    public boolean isNaN();
 }

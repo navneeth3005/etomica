@@ -55,9 +55,7 @@ public abstract class DataAccumulator extends DataPipe implements DataSource {
 
     protected abstract void addData(Data data);
     
-    public abstract int getDataLength();
-    
-    public abstract double[] getData();
+    public abstract Data getData();
     
     public abstract void reset();
     

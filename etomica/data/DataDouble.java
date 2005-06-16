@@ -22,7 +22,7 @@ public class DataDouble extends Data implements DataArithmetic {
         super(dataInfo);
     }
 
-    public void E(DataArithmetic y) {
+    public void E(Data y) {
         x = ((DataDouble)y).x;
     }
 
@@ -38,8 +38,24 @@ public class DataDouble extends Data implements DataArithmetic {
         x += ((DataDouble)y).x;
     }
 
+    public void TE(DataArithmetic y) {
+        x *= ((DataDouble)y).x;
+    }
+
+    public void DE(DataArithmetic y) {
+        x /= ((DataDouble)y).x;
+    }
+
     public void PE(double y) {
         x += y;
+    }
+
+    public void TE(double y) {
+        x *= y;
+    }
+    
+    public boolean isNaN() {
+        return Double.isNaN(x);
     }
 
     public double x;
