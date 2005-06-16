@@ -2,6 +2,7 @@ package etomica.data;
 
 import etomica.Data;
 import etomica.DataInfo;
+import etomica.utility.Function;
 
 
 /**
@@ -58,5 +59,8 @@ public class DataDouble extends Data implements DataArithmetic {
         return Double.isNaN(x);
     }
 
+    public void map(Function function) {
+        x = function.f(x);
+    }
     public double x;
 }
