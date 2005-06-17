@@ -14,7 +14,7 @@ import etomica.utility.Function;
 /*
  * History Created on Jun 15, 2005 by kofke
  */
-public interface DataArithmetic {
+public interface DataArithmetic extends DataNumeric {
 
     public void E(Data y);
 

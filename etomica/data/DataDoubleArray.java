@@ -94,6 +94,20 @@ public class DataDoubleArray extends Data implements DataArithmetic {
         }
         return false;
     }
+    
+    public DataArithmetic toArithmetic(DataArithmetic data) {
+        if (data == null) {
+            data = this;
+        }
+        else if (data != this) {
+            data.E(this);
+        }
+        return data;
+    }
+    
+    public String toString() {
+        return x.toString();
+    }
 
     private double[] x;
 }

@@ -62,5 +62,19 @@ public class DataDouble extends Data implements DataArithmetic {
     public void map(Function function) {
         x = function.f(x);
     }
+    
+    public DataArithmetic toArithmetic(DataArithmetic data) {
+        if (data == null) {
+            data = this;
+        }
+        else if (data != this) {
+            data.E(this);
+        }
+        return this;
+    }
+    
+    public String toString() {
+        return Double.toString(x);
+    }
     public double x;
 }

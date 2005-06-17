@@ -31,7 +31,7 @@ public abstract class Data implements Cloneable {
             return super.clone();
         }
         catch (CloneNotSupportedException e) {
-            return null;
+            throw new Error("Assertion failure");  //can't happen
         }
     }
     
