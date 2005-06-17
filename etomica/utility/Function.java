@@ -57,6 +57,8 @@ public interface Function {
         public double dfdx(double x) {
             return 1.0;
         }
+
+        public final static Identity INSTANCE = new Identity();
     }
 
     /**
@@ -75,6 +77,8 @@ public interface Function {
         public double inverse(double x) {
             return 1.0 / x;
         }
+
+        public final static Reciprocal INSTANCE = new Reciprocal();
     }
 
     /**
@@ -94,6 +98,7 @@ public interface Function {
             return Math.exp(x);
         }
 
+        public final static Log INSTANCE = new Log();
     }
 
     /**
@@ -113,6 +118,7 @@ public interface Function {
             return x * x;
         }
 
+        public final static Sqrt INSTANCE = new Sqrt();
     }
 
     /**
