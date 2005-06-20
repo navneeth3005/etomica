@@ -1,22 +1,25 @@
 package etomica.data.meter;
 
+import etomica.Atom;
 import etomica.DataInfo;
 import etomica.EtomicaInfo;
 import etomica.Meter;
 import etomica.Phase;
+import etomica.Species;
 import etomica.atom.iterator.AtomIteratorLeafAtoms;
-import etomica.atom.iterator.AtomIteratorPhaseDependent;
+import etomica.atom.iterator.AtomIteratorSpeciesDependent;
 import etomica.math.geometry.Polytope;
 import etomica.units.Dimension;
-import etomica.units.DimensionRatio;
 
 /**
- * Meter for measurement of density within a specified subvolume
+ * Meter for measurement of species mole fraction within a specified subvolume
  */
- 
-public abstract class MeterLocalDensity extends DataSourceScalar implements Meter {
-    public MeterLocalDensity() {
-        super(new DataInfo("Local Density",new DimensionRatio(Dimension.QUANTITY, Dimension.VOLUME)));
+
+public abstract class MeterLocalMoleFraction extends DataSourceScalar implements Meter
+{
+    public MeterLocalMoleFraction() {
+        super(new DataInfo("Local Mole Fraction",Dimension.FRACTION));
+        setSpecies(null);
     }
 
     public static EtomicaInfo getEtomicaInfo() {
@@ -31,19 +34,34 @@ public abstract class MeterLocalDensity extends DataSourceScalar implements Mete
     public Polytope getShape() {
         return shape;
     }
-
+    /**
+     * Accessor method to set which species mole-fraction or molar-density is averaged
+     * To set to total number density, invoke with static ALL_SPECIES field as argument
+     */
+    public final void setSpecies(Species s) {species = s;}
+    /**
+     * Accessor method to get the current value of the species index
+     *
+     * @see #setSpeciesIndex
+     */
+    public final Species getSpecies() {return species;}
+    
     /**
      * @return the current value of the local density or local mole fraction
      */
     public double getDataAsScalar() {
         if (phase == null) throw new IllegalStateException("must call setPhase before using meter");
-        //compute local molar density
-        int nSum = 0;
+        int totalSum = 0, speciesSum = 0;
         iterator.reset();
         while(iterator.hasNext()) {
-            if(shape.contains(iterator.nextAtom().coord.position())) nSum++;
+            Atom m = iterator.nextAtom();
+            if(shape.contains(m.coord.position())) {
+                totalSum++;
+                if(m.type.getSpecies() == species) speciesSum++;
+            }
         }
-        return nSum/shape.getVolume();
+        if(totalSum == 0) return Double.NaN;
+        return (double)speciesSum/(double)totalSum;
     }
     
     /**
@@ -66,13 +84,13 @@ public abstract class MeterLocalDensity extends DataSourceScalar implements Mete
     /**
      * @return Returns the iterator.
      */
-    public AtomIteratorPhaseDependent getIterator() {
+    public AtomIteratorSpeciesDependent getIterator() {
         return iterator;
     }
     /**
      * @param iterator The iterator to set.
      */
-    public void setIterator(AtomIteratorPhaseDependent iterator) {
+    public void setIterator(AtomIteratorSpeciesDependent iterator) {
         this.iterator = iterator;
     }
 
@@ -80,6 +98,7 @@ public abstract class MeterLocalDensity extends DataSourceScalar implements Mete
     /**
      * Class variable used to specify that all species are included in number-density calculation
      */
-    private AtomIteratorPhaseDependent iterator = new AtomIteratorLeafAtoms();
+    private Species species;
+    private AtomIteratorSpeciesDependent iterator = new AtomIteratorLeafAtoms();
     private Polytope shape;
 }

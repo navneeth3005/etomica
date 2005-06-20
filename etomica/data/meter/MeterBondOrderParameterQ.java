@@ -4,7 +4,7 @@ import etomica.AtomPair;
 import etomica.Default;
 import etomica.EtomicaElement;
 import etomica.EtomicaInfo;
-import etomica.MeterAbstract;
+import etomica.Meter;
 import etomica.Phase;
 import etomica.Space;
 import etomica.atom.iterator.ApiLeafAtoms;
@@ -21,7 +21,7 @@ import etomica.units.Dimension;
    * @author Jhumpa Adhikari
    */
 
-public class MeterBondOrderParameterQ extends MeterAbstract implements EtomicaElement {
+public class MeterBondOrderParameterQ extends Meter implements EtomicaElement {
 	
     public MeterBondOrderParameterQ(Space space) {
         super(1);
@@ -41,6 +41,7 @@ public class MeterBondOrderParameterQ extends MeterAbstract implements EtomicaEl
      * in its current configuration.  Returned array has only one element.
      */
     public double[] getData(Phase phase) {
+        if (phase == null) throw new IllegalStateException("must call setPhase before using meter");
         int nbSum = 0;
         for(int m=-L; m<=L; m++) {
             int idx = m+L;

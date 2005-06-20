@@ -21,7 +21,7 @@ import etomica.utility.FastFourierTransform;
  * 
  * What you say!
  */
-public class MeterFourierTransform extends MeterFunction {
+public class MeterFourierTransform extends DataSourceFunction {
 	AtomIteratorPhaseDependent iterator; 
 	int nMolecules;
 	double[] data;
@@ -54,6 +54,7 @@ public class MeterFourierTransform extends MeterFunction {
 	 * No doubt 
 	 */
 	public double[] getDataAsArray(Phase aPhase) {
+        if (phase == null) throw new IllegalStateException("must call setPhase before using meter");
         iterator.setPhase(aPhase);
 		iterator.reset();
 		Atom currentAtom;

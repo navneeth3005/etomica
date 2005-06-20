@@ -29,7 +29,7 @@ import etomica.units.Dimension;
  * 
  * @author David Kofke
  */
-public class MeterWidomInsertion extends MeterScalar implements EtomicaElement {
+public class MeterWidomInsertion extends DataSourceScalar implements EtomicaElement {
 
 	public MeterWidomInsertion(Space space, PotentialMaster potentialMaster) {
 		super();
@@ -143,6 +143,7 @@ public class MeterWidomInsertion extends MeterScalar implements EtomicaElement {
 	 *         </sub>/V if <code>residual</code> is false
 	 */
 	public double getDataAsScalar(Phase phase) {
+        if (phase == null) throw new IllegalStateException("must call setPhase before using meter");
 		double sum = 0.0; //sum for local insertion average
 		testMolecule.node.setParent(phase.getAgent(species));
 		energyMeter.setTarget(testMolecule);

@@ -1,7 +1,7 @@
 package etomica.data.meter;
 
 import etomica.Accumulator;
-import etomica.MeterAbstract;
+import etomica.Meter;
 import etomica.Simulation;
 import etomica.units.Dimension;
 
@@ -15,9 +15,9 @@ import etomica.units.Dimension;
  *
  * @author David Kofke
  */
-public abstract class MeterFunctionGroup extends MeterAbstract  {
+public abstract class MeterFunctionGroup extends Meter  {
     
-	public static final String VERSION = "MeterFunctionGroup:03.07.21/"+MeterAbstract.VERSION;
+	public static final String VERSION = "MeterFunctionGroup:03.07.21/"+MeterAbsMeter;
     
 	protected PseudoMeter[] meters;
 	protected int nMeters;
@@ -70,7 +70,7 @@ public abstract class MeterFunctionGroup extends MeterAbstract  {
 		return accumulator;
 	 }
 	
-	public MeterFunction[] allMeters() {
+	public DataSourceFunction[] allMeters() {
 		return meters;
 	}
 	
@@ -103,7 +103,7 @@ public abstract class MeterFunctionGroup extends MeterAbstract  {
 	  * although it is actually serving as a wrapper for the one of the data values
 	  * collected by the meter group.
 	  */
-	 public class PseudoMeter extends MeterFunction {
+	 public class PseudoMeter extends DataSourceFunction {
 	   private final int index;
 		PseudoMeter(Simulation sim, int i) {
 			super(sim);

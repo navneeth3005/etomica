@@ -14,7 +14,7 @@ import etomica.units.Dimension;
  * @author Rob Riggleman
  */
 
-public class MeterSurfaceTensionHard extends MeterScalar {//, EtomicaElement {
+public class MeterSurfaceTensionHard extends DataSourceScalar {//, EtomicaElement {
     private final Tensor pressureTensor;
     private final MeterTensorVelocity velocityTensor;
     private final MeterTensorVirialHard virialTensor;
@@ -49,6 +49,7 @@ public class MeterSurfaceTensionHard extends MeterScalar {//, EtomicaElement {
      */
     
     public double getDataAsScalar(Phase p) {
+        if (phase == null) throw new IllegalStateException("must call setPhase before using meter");
         pressureTensor.E(velocityTensor.getDataAsTensor(p));
         pressureTensor.PE(virialTensor.getDataAsTensor(p));
         if (D == 1) {surfaceTension = pressureTensor.component(0, 0);}

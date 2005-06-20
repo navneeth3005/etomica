@@ -15,7 +15,7 @@ import etomica.units.Dimension;
  * kinetic-energy meter.
  */
 
-public final class MeterTemperature extends MeterScalar implements
+public final class MeterTemperature extends DataSourceScalar implements
 		EtomicaElement {
 
 	public MeterTemperature() {
@@ -31,6 +31,7 @@ public final class MeterTemperature extends MeterScalar implements
 	}
 
 	public double getDataAsScalar(Phase phase) {
+        if (phase == null) throw new IllegalStateException("must call setPhase before using meter");
 		return (2. / (double) (phase.atomCount() * phase.boundary().dimensions().D()))
 				* meterKE.getDataAsScalar(phase);
 	}

@@ -1,7 +1,7 @@
 package etomica.data.meter;
 
 import etomica.DataTranslator;
-import etomica.MeterAbstract;
+import etomica.Meter;
 import etomica.Phase;
 import etomica.Space;
 import etomica.data.DataTranslatorTensor;
@@ -20,7 +20,7 @@ import javax.swing.JScrollPane;
  * Includes a DisplayTensorTable method to show results.
  */
 
-public abstract class MeterTensor extends MeterAbstract {
+public abstract class MeterTensor extends Meter {
     
     /**
      * Constructs meter, indicating to superclass that nDataPerPhase is D^2.

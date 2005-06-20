@@ -1,8 +1,10 @@
 package etomica.data.meter;
 
-import etomica.DataTranslator;
-import etomica.MeterAbstract;
-import etomica.Phase;
+import etomica.Data;
+import etomica.DataInfo;
+import etomica.Meter;
+import etomica.Simulation;
+import etomica.data.DataDoubleArray;
 
 /**
  * Meter for recording and averaging a 1D array of type double.
@@ -11,37 +13,38 @@ import etomica.Phase;
  /* History
   * Added 8/3/04
   */
-public abstract class MeterArray extends MeterAbstract {
+public abstract class MeterArray extends Meter {
     
 	/**
 	 * Constructor with default nDataPerPhase = 1
-	 * @param parent
 	 */
-	public MeterArray() {
-	    this(1);
-	}
-	
-	public MeterArray(int nDataPerPhase) {
-		super(nDataPerPhase);
-	}
-	
-	/**
-	 * Returns same quantity as getData method. Included for parallel
-	 * structure with other MeterAbstract subclasses.
-	 * @param phase
-	 * @return
-	 */
-	public abstract double[] getDataAsArray(Phase phase);
-	
-	public final double[] getData(Phase phase) {
-		return getDataAsArray(phase);
-	}
-	
-	protected void setNDataPerPhase(int nDataPerPhase) {
-		phaseData = new double[nDataPerPhase];
-		this.nDataPerPhase = nDataPerPhase;
-	}
-	
-	public DataTranslator getTranslator() {return DataTranslator.IDENTITY;}
-	
+    public MeterArray(DataInfo dataInfo) {
+        this(null,dataInfo,1);
+    }
+    
+    public MeterArray(Simulation sim, DataInfo dataInfo, int nData) {
+        super(sim);
+        data = new DataDoubleArray(dataInfo);
+        data.setLength(nData);
+        dataArray = data.getData();
+    }
+    
+    public abstract double[] getDataAsArray();
+    
+    public final Data getData() {
+        getDataAsArray();
+        return data;
+    }
+    
+    protected void setNData(int nData) {
+        data.setLength(nData);
+        dataArray = data.getData();
+    }
+    
+    public int getNData() {
+        return dataArray.length;
+    }
+    
+    private final DataDoubleArray data;
+    protected double[] dataArray;
 }//end of MeterArray class	 

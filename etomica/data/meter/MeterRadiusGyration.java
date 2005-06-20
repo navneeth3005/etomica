@@ -15,7 +15,7 @@ import etomica.units.Dimension;
  *
  * @author David Kofke
  */
-public class MeterRadiusGyration extends MeterScalar implements EtomicaElement {
+public class MeterRadiusGyration extends DataSourceScalar implements EtomicaElement {
 	
 	/**
 	 * Creates meter with default to compute pair correlation for all
@@ -62,6 +62,7 @@ public class MeterRadiusGyration extends MeterScalar implements EtomicaElement {
 	 * Computes RDF for the current configuration of the given phase.
 	 */
 	public double getDataAsScalar(Phase aPhase) {
+        if (phase == null) throw new IllegalStateException("must call setPhase before using meter");
         cPair.setNearestImageTransformer(aPhase.boundary());
 		iterator.setPhase(aPhase);
 	    iterator.reset();

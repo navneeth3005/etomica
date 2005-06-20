@@ -14,7 +14,7 @@ import etomica.units.Dimension;
  *
  * @author David Kofke
  */
-public class MeterPressureHard extends MeterScalar implements
+public class MeterPressureHard extends DataSourceScalar implements
                                                 IntegratorHard.CollisionListener,
                                                 MeterCollisional,
                                                 EtomicaElement {
@@ -39,6 +39,7 @@ public class MeterPressureHard extends MeterScalar implements
      */
     //TODO consider how to ensure timer is advanced before this method is invoked
     public double getDataAsScalar(Phase p) {
+        if (phase == null) throw new IllegalStateException("must call setPhase before using meter");
         if (integratorHard.getPhase()[0] != p) {
             throw new IllegalArgumentException("Integrator must act on meter's phase");
         }

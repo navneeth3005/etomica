@@ -2,10 +2,11 @@ package etomica.data.meter;
 import etomica.Atom;
 import etomica.EtomicaElement;
 import etomica.EtomicaInfo;
-import etomica.MeterAbstract;
+import etomica.Meter;
 import etomica.Phase;
 import etomica.Space;
 import etomica.atom.iterator.AtomIteratorListTabbed;
+import etomica.data.DataDouble;
 import etomica.data.DataSourceUniform;
 import etomica.space.Boundary;
 import etomica.space.Vector;
@@ -30,7 +31,7 @@ public class MeterProfile extends MeterFunction implements EtomicaElement {
     /**
      * Meter that defines the property being profiled.
      */
-    MeterScalarAtomic meter;
+    DataSourceAtomic meter;
     
     private double profileNorm = 1.0;
     private final AtomIteratorListTabbed ai1 = new AtomIteratorListTabbed();
@@ -54,7 +55,7 @@ public class MeterProfile extends MeterFunction implements EtomicaElement {
     /**
      * Returns the ordinate label for the profile, obtained from the associated meter.
      */
-    public String getLabel() {return ((MeterScalar)meter).getLabel();}
+    public String getLabel() {return ((DataSourceScalar)meter).getLabel();}
     
     /**
      * Indicates that the abscissa coordinate is dimensionless.
@@ -65,17 +66,17 @@ public class MeterProfile extends MeterFunction implements EtomicaElement {
     /**
      * Returns the dimensions of the ordinate, obtained from the associated meter.
      */
-    public Dimension getDimension() {return (meter==null) ? null : ((MeterScalar)meter).getDimension();}
+    public Dimension getDimension() {return (meter==null) ? null : ((DataSourceScalar)meter).getDimension();}
         
     /**
      * The meter that defines the profiled quantity
      */
-    public MeterAbstract getMeter() {return (MeterAbstract)meter;}
+    public Meter getMeter() {return (Meter)meter;}
     
     /**
      * Accessor method for the meter that defines the profiled quantity.
      */
-    public void setMeter(MeterScalarAtomic m) {
+    public void setMeter(DataSourceAtomic m) {
         meter = m;
     }
     
@@ -108,7 +109,7 @@ public class MeterProfile extends MeterFunction implements EtomicaElement {
         ai1.reset();
         while(ai1.hasNext()) {
             Atom a = ai1.nextAtom();
-            double value = meter.getDataAsScalar(a);
+            double value = ((DataDouble)meter.getData(a)).x;
             position.E(a.coord.position());
             position.PE(boundary.centralImage(position));
             int i = ((DataSourceUniform)xDataSource).getIndex(position.dot(profileVector)*profileNorm);

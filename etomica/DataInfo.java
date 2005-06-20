@@ -33,7 +33,11 @@ public class DataInfo implements Cloneable {
     public String getLabel() {
         return label;
     }
+    
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
-    private final String label;
+    private String label;
     private final Dimension dimension;
 }

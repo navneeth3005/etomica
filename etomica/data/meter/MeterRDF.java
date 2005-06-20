@@ -15,7 +15,7 @@ import etomica.units.Dimension;
  *
  * @author David Kofke
  */
-public class MeterRDF extends MeterFunction implements EtomicaElement {
+public class MeterRDF extends DataSourceFunction implements EtomicaElement {
 	
 	/**
 	 * Creates meter with default to compute pair correlation for all

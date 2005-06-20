@@ -12,7 +12,7 @@ import etomica.action.AtomActionRandomizeVelocity;
 import etomica.atom.AtomList;
 import etomica.atom.iterator.AtomIteratorLeafAtoms;
 import etomica.data.meter.MeterKineticEnergy;
-import etomica.data.meter.MeterScalar;
+import etomica.data.meter.DataSourceScalar;
 import etomica.data.meter.MeterTemperature;
 import etomica.exception.MethodNotImplementedException;
 import etomica.space.ICoordinateKinetic;
@@ -219,7 +219,7 @@ public abstract class IntegratorMD extends Integrator {
     /**
      * returns the temperature meter used for velocity rescaling.
      */
-    public MeterScalar getMeterTemperature() {
+    public DataSourceScalar getMeterTemperature() {
         return meterTemperature;
     }
     /**
@@ -227,7 +227,7 @@ public abstract class IntegratorMD extends Integrator {
      * velocity rescaling.  You only need to call this method if 
      * the standard MeterTemperature won't work.
      */
-    public void setMeterTemperature(MeterScalar meter) {
+    public void setMeterTemperature(DataSourceScalar meter) {
         meterTemperature = meter;
     }
     
@@ -241,7 +241,7 @@ public abstract class IntegratorMD extends Integrator {
     private int thermostatCount, thermostatInterval;
     protected MeterKineticEnergy meterKE;
     private AtomActionRandomizeVelocity atomActionRandomizeVelocity;
-    private MeterScalar meterTemperature;
+    private DataSourceScalar meterTemperature;
     
 }//end of IntegratorMD
     

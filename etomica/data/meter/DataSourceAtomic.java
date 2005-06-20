@@ -7,13 +7,14 @@
 package etomica.data.meter;
 
 import etomica.Atom;
+import etomica.Data;
 
 
 /**
  * Interface for a meter that can return a value given an arbitrary atom.
  */
-public interface MeterScalarAtomic {
+public interface DataSourceAtomic {
     
-    public double getDataAsScalar(Atom a);
+    public Data getData(Atom a);
     
 }
