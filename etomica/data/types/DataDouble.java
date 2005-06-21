@@ -2,6 +2,7 @@ package etomica.data.types;
 
 import etomica.Data;
 import etomica.DataInfo;
+import etomica.DataSource;
 import etomica.utility.Function;
 
 
@@ -93,4 +94,8 @@ public class DataDouble extends Data implements DataArithmetic {
         return dataInfo.getLabel() + " " + Double.toString(x);
     }
     public double x;
+    
+    public interface Source extends DataSource {
+        public DataDouble getDataDouble();
+    }
 }

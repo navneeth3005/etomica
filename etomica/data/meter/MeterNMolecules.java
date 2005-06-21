@@ -9,6 +9,7 @@ import etomica.Phase;
 import etomica.Species;
 import etomica.data.DataSourceAtomic;
 import etomica.data.DataSourceScalar;
+import etomica.data.types.DataDouble;
 import etomica.units.Dimension;
 
 /**
@@ -27,6 +28,10 @@ public class MeterNMolecules extends DataSourceScalar implements DataSourceAtomi
         return info;
     }
 
+    public Class getDataType() {
+        return DataDouble.class;
+    }
+    
     public void setSpecies(Species s) {species = s;}
     public Species getSpecies() {return species;}
 

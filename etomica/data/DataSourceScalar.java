@@ -2,7 +2,6 @@ package etomica.data;
 
 import etomica.Data;
 import etomica.DataInfo;
-import etomica.DataSource;
 import etomica.data.types.DataDouble;
 import etomica.utility.NameMaker;
 
@@ -10,7 +9,7 @@ import etomica.utility.NameMaker;
  * Particular data source for which the data is a simple scalar of type double.
  */
  
-public abstract class DataSourceScalar implements DataSource {
+public abstract class DataSourceScalar implements DataDouble.Source {
     
     public DataSourceScalar(DataInfo dataInfo) {
         data = new DataDouble(dataInfo);
@@ -27,6 +26,7 @@ public abstract class DataSourceScalar implements DataSource {
      */
 	public abstract double getDataAsScalar();
 	
+    
     /**
      * Causes the single getDataAsScalar(Phase) value to be computed and
      * returned for the given phase. In response to a getData() call,
@@ -34,10 +34,14 @@ public abstract class DataSourceScalar implements DataSource {
      * via setPhase and collect these values into a vector and return them in
      * response to a getData() call.
      */
-	public final Data getData() {
+	public final DataDouble getDataDouble() {
 		data.x = getDataAsScalar();
 		return data;
 	}
+    
+    public final Data getData() {
+        return getDataDouble();
+    }
 	
     public String getName() {
         return name;

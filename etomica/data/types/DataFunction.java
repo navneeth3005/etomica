@@ -55,8 +55,8 @@ public class DataFunction extends DataDoubleArray {
         t.setLength(n);
     }
 
-    public double[] getTData() {
-        return t.getData();
+    public DataDoubleArray getTData() {
+        return t;
     }
     
     public String toString() {

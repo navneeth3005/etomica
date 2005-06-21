@@ -8,12 +8,13 @@ package etomica.data;
 
 import etomica.Atom;
 import etomica.Data;
+import etomica.DataSource;
 
 
 /**
- * Interface for a meter that can return a value given an arbitrary atom.
+ * Interface for a DataSource that can return a value given an arbitrary atom.
  */
-public interface DataSourceAtomic {
+public interface DataSourceAtomic extends DataSource {
     
     public Data getData(Atom a);
     

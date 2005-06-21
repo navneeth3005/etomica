@@ -36,6 +36,7 @@ public abstract class IntegratorMD extends Integrator {
         atomActionRandomizeVelocity = new AtomActionRandomizeVelocity();
         atomActionRandomizeVelocity.setTemperature(temperature);
         meterTemperature = new MeterTemperature();
+        currentKineticEnergy = new double[1];
     }
 
     /**
@@ -51,7 +52,6 @@ public abstract class IntegratorMD extends Integrator {
     protected void setup() {
         super.setup();
         thermostatCount = 1;
-        currentKineticEnergy = new double[phase.length];
         meterKE.setPhase(firstPhase);
         doThermostat();
     }
@@ -62,7 +62,13 @@ public abstract class IntegratorMD extends Integrator {
     public void reset() {
         super.reset();
         meterKE.setPhase(firstPhase);
-        currentKineticEnergy = meterKE.getDataAsScalar();
+        if (phase.length != currentKineticEnergy.length) {
+            currentKineticEnergy = new double[phase.length];
+        }
+        for (int i=0; i<phase.length; i++) {
+            meterKE.setPhase(phase[i]);
+            currentKineticEnergy[i] = meterKE.getDataAsScalar();
+        }
     }
 
     /**
@@ -136,14 +142,16 @@ public abstract class IntegratorMD extends Integrator {
                 // calculate current kinetic temperature
                 for (int i=0; i<phase.length; i++) {
                     scaleMomenta(phase[i]);
+                    meterKE.setPhase(phase[i]);
+                    currentKineticEnergy[i] = meterKE.getDataAsScalar();
                 }
-                currentKineticEnergy = meterKE.getDataAsScalar();
             }
             else if (thermostat == ANDERSEN) {
                 for (int i=0; i<phase.length; i++) {
                     randomizeMomenta(phase[i]);
+                    meterKE.setPhase(phase[i]);
+                    currentKineticEnergy[i] = meterKE.getDataAsScalar();
                 }
-                currentKineticEnergy = meterKE.getData();
             }
             else if (thermostat == ANDERSEN_SINGLE) {
                 for (int i=0; i<phase.length; i++) {
@@ -208,7 +216,8 @@ public abstract class IntegratorMD extends Integrator {
         double scale = s;
         if (t == 0) {
             randomizeMomenta(aPhase);
-            t = meterTemperature.getDataAsScalar(aPhase);
+            meterTemperature.setPhase(aPhase);
+            t = meterTemperature.getDataAsScalar();
             s = Math.sqrt(temperature / t);
         }
         while(atomIterator.hasNext()) {
@@ -229,7 +238,7 @@ public abstract class IntegratorMD extends Integrator {
      * velocity rescaling.  You only need to call this method if 
      * the standard MeterTemperature won't work.
      */
-    public void setMeterTemperature(DataSourceScalar meter) {
+    public void setMeterTemperature(MeterTemperature meter) {
         meterTemperature = meter;
     }
     
@@ -237,13 +246,13 @@ public abstract class IntegratorMD extends Integrator {
      * Elementary time step for the MD simulation
      */
     protected double timeStep;
-    protected double currentKineticEnergy;
+    protected double[] currentKineticEnergy;
     protected AtomIteratorLeafAtoms atomIterator;
     protected ThermostatType thermostat;
     private int thermostatCount, thermostatInterval;
     protected MeterKineticEnergy meterKE;
     private AtomActionRandomizeVelocity atomActionRandomizeVelocity;
-    private DataSourceScalar meterTemperature;
+    private MeterTemperature meterTemperature;
     
 }//end of IntegratorMD
     

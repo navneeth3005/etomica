@@ -92,7 +92,7 @@ public abstract class Integrator implements EtomicaElement {
     public void reset() {
         for (int i=0; i<phase.length; i++) {
             meterPE.setPhase(phase[i]);
-            currentPotentialEnergy[i] = meterPE.getDataAsScalar();;
+            currentPotentialEnergy[i] = meterPE.getDataAsScalar();
             if (currentPotentialEnergy[i] == Double.POSITIVE_INFINITY) {
                 if (Default.FIX_OVERLAP) {
                     System.out.println("overlap in "+phase[i]);

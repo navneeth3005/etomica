@@ -98,6 +98,10 @@ public class DataDoubleArray extends Data implements DataArithmetic {
     public void setLength(int n) {
         x = new double[n];
     }
+    
+    public int getLength() {
+        return x.length;
+    }
 
     public double[] getData() {
         return x;

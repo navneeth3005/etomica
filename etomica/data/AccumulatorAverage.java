@@ -132,6 +132,7 @@ public class AccumulatorAverage extends DataAccumulator {
         blockSumSq = (DataArithmetic)value.makeCopy();
         mostRecent = (DataArithmetic)value.makeCopy();
         mostRecentBlock = (DataArithmetic)value.makeCopy();
+        work = (DataArithmetic)value.makeCopy();
         reset();
         dataGroup = new DataGroup(value.getDataInfo(),new Data[]{(Data)mostRecent,
                 (Data)average,(Data)error,(Data)standardDeviation,(Data)mostRecentBlock});
