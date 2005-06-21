@@ -9,9 +9,11 @@ import etomica.IntegratorIntervalEvent;
 import etomica.IntegratorIntervalListener;
 import etomica.IntegratorNonintervalEvent;
 import etomica.IntegratorNonintervalListener;
+import etomica.data.types.DataInteger;
 import etomica.units.Count;
 import etomica.units.Dimension;
 import etomica.units.Unit;
+import etomica.utility.NameMaker;
 
 /**
  * Data source that keeps track of the number of steps performed by an
@@ -29,6 +31,7 @@ public final class DataSourceCountSteps implements DataSource,
 	 */
 	public DataSourceCountSteps() {
         data = new DataInteger(new DataInfo("Integrator steps",Dimension.QUANTITY));
+        setName(NameMaker.makeName(this.getClass()));
 	}
 
 	public static EtomicaInfo getEtomicaInfo() {
@@ -36,6 +39,10 @@ public final class DataSourceCountSteps implements DataSource,
 				"Records the number of steps performed by the integrator");
 		return info;
 	}
+    
+    public DataInfo getDataInfo() {
+        return data.getDataInfo();
+    }
 
 	/**
 	 * @return Count.UNIT
@@ -80,5 +87,19 @@ public final class DataSourceCountSteps implements DataSource,
 		}
 	}
 
-    private DataInteger data;
+    /**
+     * @return Returns the name.
+     */
+    public String getName() {
+        return name;
+    }
+    /**
+     * @param name The name to set.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    private final DataInteger data;
+    private String name;
 }

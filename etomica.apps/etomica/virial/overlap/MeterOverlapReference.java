@@ -41,7 +41,7 @@ public class MeterOverlapReference extends MeterFunctionGroup {
 	}
 
 	/**
-	 * @see etomica.data.meter.DataSourceFunction#getData()
+	 * @see etomica.data.DataSourceFunction#getData()
 	 */
 	public void updateValues() {
 		PairSet pairSet = ((PhaseCluster)phase).getPairSet().resetPairs();
@@ -58,7 +58,7 @@ public class MeterOverlapReference extends MeterFunctionGroup {
 	}
 
 	/**
-	 * @see etomica.data.meter.DataSourceFunction#setX(double, double, int)
+	 * @see etomica.data.DataSourceFunction#setX(double, double, int)
 	 */
 	public void setX(double min, double max, int n) {
 		super.setX(min, max, n);

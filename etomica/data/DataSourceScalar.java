@@ -1,13 +1,13 @@
-package etomica.data.meter;
+package etomica.data;
 
 import etomica.Data;
 import etomica.DataInfo;
 import etomica.DataSource;
-import etomica.data.DataDouble;
+import etomica.data.types.DataDouble;
 import etomica.utility.NameMaker;
 
 /**
- * Meter for recording and averaging a simple scalar of type double.
+ * Particular data source for which the data is a simple scalar of type double.
  */
  
 public abstract class DataSourceScalar implements DataSource {

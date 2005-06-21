@@ -1,5 +1,6 @@
 package etomica.data.meter;
 import etomica.Phase;
+import etomica.data.DataSourceScalar;
 import etomica.units.Dimension;
 import etomica.units.DimensionRatio;
 	

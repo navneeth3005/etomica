@@ -9,6 +9,7 @@ import etomica.Default;
 import etomica.Phase;
 import etomica.atom.iterator.AtomIteratorLeafAtoms;
 import etomica.atom.iterator.AtomIteratorPhaseDependent;
+import etomica.data.DataSourceFunction;
 import etomica.units.Dimension;
 import etomica.utility.FastFourierTransform;
 

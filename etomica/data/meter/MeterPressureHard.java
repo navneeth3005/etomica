@@ -3,6 +3,7 @@ import etomica.EtomicaElement;
 import etomica.EtomicaInfo;
 import etomica.Phase;
 import etomica.data.DataSourceCountTime;
+import etomica.data.DataSourceScalar;
 import etomica.integrator.IntegratorHard;
 import etomica.integrator.IntegratorMD;
 import etomica.units.Dimension;

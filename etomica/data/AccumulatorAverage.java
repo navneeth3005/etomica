@@ -6,8 +6,12 @@ package etomica.data;
 
 import etomica.Constants;
 import etomica.Data;
+import etomica.DataInfo;
 import etomica.DataSink;
 import etomica.Default;
+import etomica.Constants.TypedConstant;
+import etomica.data.types.DataArithmetic;
+import etomica.data.types.DataGroup;
 import etomica.utility.Function;
 
 /**
@@ -28,6 +32,10 @@ public class AccumulatorAverage extends DataAccumulator {
 	public int getBlockSize() {
 		return blockSize;
 	}
+    
+    public DataInfo getDataInfo() {
+        return dataGroup.getDataInfo();
+    }
 
     /**
      * Add the given values to the sums and block sums.  If any 
@@ -143,14 +151,14 @@ public class AccumulatorAverage extends DataAccumulator {
         return count;
     }
 
-    public DataType[] dataChoices() {return CHOICES;}
+    public TypedConstant[] dataChoices() {return CHOICES;}
     
     /**
 	 * Typed constant that can be used to indicated the quantity
 	 * to be taken from a meter (e.g., average, error, current value, etc.).
 	 * Used primarily by Display objects.
 	 */
-	public static class Type extends etomica.data.DataType {
+	public static class Type extends TypedConstant {
         protected Type(String label, int index) {
             super(label);
             this.index = index;

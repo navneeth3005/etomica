@@ -2,7 +2,7 @@ package etomica.graphics;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import etomica.data.meter.DataSourceScalar;
+import etomica.data.DataSourceScalar;
 
     public class DisplayScrollingGraph extends Display {
 

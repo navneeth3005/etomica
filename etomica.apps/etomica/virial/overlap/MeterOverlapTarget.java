@@ -1,7 +1,7 @@
 package etomica.virial.overlap;
 
 import etomica.Simulation;
-import etomica.data.meter.DataSourceFunction;
+import etomica.data.DataSourceFunction;
 import etomica.units.Dimension;
 import etomica.virial.Cluster;
 import etomica.virial.PairSet;
@@ -52,7 +52,7 @@ public class MeterOverlapTarget extends DataSourceFunction implements etomica.Da
 	}
 
 	/**
-	 * @see etomica.data.meter.DataSourceFunction#getData()
+	 * @see etomica.data.DataSourceFunction#getData()
 	 */
 	public double[] getData() {
 		PairSet pairSet = ((PhaseCluster)phase).getPairSet().resetPairs();
@@ -119,7 +119,7 @@ public class MeterOverlapTarget extends DataSourceFunction implements etomica.Da
 	}
 
 	/**
-	 * @see etomica.data.meter.DataSourceFunction#setX(double, double, int)
+	 * @see etomica.data.DataSourceFunction#setX(double, double, int)
 	 */
 	public void setX(double min, double max, int n) {
 		super.setX(min, max, n);

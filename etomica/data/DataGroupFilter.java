@@ -1,6 +1,7 @@
 package etomica.data;
 
 import etomica.Data;
+import etomica.data.types.DataGroup;
 
 
 /**

@@ -4,7 +4,7 @@ import etomica.Atom;
 import etomica.Phase;
 import etomica.Space;
 import etomica.atom.iterator.AtomIteratorListTabbed;
-import etomica.data.meter.DataSourceScalar;
+import etomica.data.DataSourceScalar;
 import etomica.space.Vector;
 import etomica.units.Dimension;
 

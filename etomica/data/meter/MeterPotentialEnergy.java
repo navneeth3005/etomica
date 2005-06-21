@@ -6,6 +6,7 @@ import etomica.IteratorDirective;
 import etomica.Meter;
 import etomica.Phase;
 import etomica.PotentialMaster;
+import etomica.data.DataSourceScalar;
 import etomica.potential.PotentialCalculationEnergySum;
 import etomica.units.Dimension;
 

@@ -1,7 +1,7 @@
 package etomica.virial.dos;
 
 import etomica.Simulation;
-import etomica.data.meter.DataSourceFunction;
+import etomica.data.DataSourceFunction;
 import etomica.units.Dimension;
 import etomica.virial.Cluster;
 import etomica.virial.P0Cluster;
@@ -36,7 +36,7 @@ public class MeterDOS extends DataSourceFunction {
 	}
 
 	/**
-	 * @see etomica.data.meter.DataSourceScalar#getData()
+	 * @see etomica.data.DataSourceScalar#getData()
 	 */
 	public double[] getData() {
 		for(int i=0; i<nPoints; i++) y[i] = 0.0;

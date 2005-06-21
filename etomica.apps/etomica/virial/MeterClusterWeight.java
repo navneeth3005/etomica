@@ -3,7 +3,7 @@ package etomica.virial;
 import etomica.IteratorDirective;
 import etomica.Phase;
 import etomica.PotentialMaster;
-import etomica.data.meter.DataSourceScalar;
+import etomica.data.DataSourceScalar;
 import etomica.units.Dimension;
 
 /**

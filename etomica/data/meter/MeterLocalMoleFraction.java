@@ -8,6 +8,7 @@ import etomica.Phase;
 import etomica.Species;
 import etomica.atom.iterator.AtomIteratorLeafAtoms;
 import etomica.atom.iterator.AtomIteratorSpeciesDependent;
+import etomica.data.DataSourceScalar;
 import etomica.math.geometry.Polytope;
 import etomica.units.Dimension;
 

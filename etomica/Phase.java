@@ -112,6 +112,7 @@ public class Phase implements EtomicaElement {
      * @return The given name of this phase
      */
     public final String getName() {return name;}
+    
     /**
      * Method to set the name of this simulation element. The element's name
      * provides a convenient way to label output data that is associated with

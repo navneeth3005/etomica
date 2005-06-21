@@ -3,6 +3,7 @@ package etomica.data.meter;
 import etomica.Accumulator;
 import etomica.Meter;
 import etomica.Simulation;
+import etomica.data.DataSourceFunction;
 import etomica.units.Dimension;
 
 /**

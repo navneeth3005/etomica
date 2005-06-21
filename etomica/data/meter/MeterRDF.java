@@ -6,6 +6,7 @@ import etomica.Phase;
 import etomica.Space;
 import etomica.atom.iterator.ApiLeafAtoms;
 import etomica.atom.iterator.AtomsetIteratorPhaseDependent;
+import etomica.data.DataSourceFunction;
 import etomica.data.DataSourceUniform;
 import etomica.space.CoordinatePair;
 import etomica.units.Dimension;

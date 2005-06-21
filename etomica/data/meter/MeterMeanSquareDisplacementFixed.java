@@ -6,6 +6,7 @@ import etomica.Integrator;
 import etomica.IntegratorIntervalEvent;
 import etomica.IntegratorIntervalListener;
 import etomica.Space;
+import etomica.data.DataSourceFunction;
 import etomica.integrator.IntegratorMD;
 import etomica.space.Vector;
 import etomica.units.Count;

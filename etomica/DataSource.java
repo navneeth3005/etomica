@@ -5,7 +5,7 @@ package etomica;
  * (in the form of an array of doubles) for plotting or other analysis.
  */
  
-public interface DataSource extends EtomicaElement {
+public interface DataSource {
 
     /**
      * @return the data given by this source

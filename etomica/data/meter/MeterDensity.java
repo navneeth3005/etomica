@@ -5,6 +5,7 @@ import etomica.EtomicaInfo;
 import etomica.Meter;
 import etomica.Phase;
 import etomica.Species;
+import etomica.data.DataSourceScalar;
 import etomica.units.Dimension;
 import etomica.units.DimensionRatio;
 
@@ -13,6 +14,7 @@ import etomica.units.DimensionRatio;
  * Molecule number density is defined (number of molecules)/(volume of phase)
  */
 public class MeterDensity extends DataSourceScalar implements Meter {
+    
     public MeterDensity() {
         super(new DataInfo("Number Density",new DimensionRatio(Dimension.QUANTITY,Dimension.VOLUME)));
     }

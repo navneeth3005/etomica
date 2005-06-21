@@ -1,6 +1,7 @@
 package etomica.data;
 
 import etomica.Data;
+import etomica.DataInfo;
 import etomica.DataSink;
 import etomica.DataSource;
 
@@ -63,6 +64,10 @@ public class DataBin implements DataSink, DataSource {
      */
     public Data getData() {
         return data;
+    }
+    
+    public DataInfo getDataInfo() {
+        return (data == null) ? null : data.getDataInfo();
     }
 
     private Data data;

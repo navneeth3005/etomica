@@ -15,7 +15,7 @@ import etomica.Phase;
 import etomica.Simulation;
 import etomica.SpeciesSpheresMono;
 import etomica.action.PhaseQuench;
-import etomica.data.meter.DataSourceScalar;
+import etomica.data.DataSourceScalar;
 import etomica.graphics.ColorScheme;
 import etomica.graphics.DeviceButton;
 import etomica.graphics.DeviceSlider;
@@ -231,7 +231,7 @@ public class HSMD2D_NEW extends SimulationGraphic  {
 		}
 
 		/**
-		 * @see etomica.data.meter.DataSourceScalar#getData()
+		 * @see etomica.data.DataSourceScalar#getData()
 		 */
 		public double getDataAsScalar(Phase p) {
 			double w = -(action.ke1 - action.ke0)/HSMD2D_NEW.this.integrator.getTemperature();

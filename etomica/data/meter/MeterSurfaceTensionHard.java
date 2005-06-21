@@ -2,6 +2,7 @@ package etomica.data.meter;
 import etomica.EtomicaInfo;
 import etomica.Phase;
 import etomica.Space;
+import etomica.data.DataSourceScalar;
 import etomica.space.Tensor;
 import etomica.units.Dimension;
 

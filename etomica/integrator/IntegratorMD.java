@@ -8,11 +8,12 @@ import etomica.Integrator;
 import etomica.Phase;
 import etomica.PotentialMaster;
 import etomica.Simulation;
+import etomica.Constants.TypedConstant;
 import etomica.action.AtomActionRandomizeVelocity;
 import etomica.atom.AtomList;
 import etomica.atom.iterator.AtomIteratorLeafAtoms;
+import etomica.data.DataSourceScalar;
 import etomica.data.meter.MeterKineticEnergy;
-import etomica.data.meter.DataSourceScalar;
 import etomica.data.meter.MeterTemperature;
 import etomica.exception.MethodNotImplementedException;
 import etomica.space.ICoordinateKinetic;
@@ -51,7 +52,7 @@ public abstract class IntegratorMD extends Integrator {
         super.setup();
         thermostatCount = 1;
         currentKineticEnergy = new double[phase.length];
-        meterKE.setPhase(phase);
+        meterKE.setPhase(firstPhase);
         doThermostat();
     }
     
@@ -60,8 +61,8 @@ public abstract class IntegratorMD extends Integrator {
      */
     public void reset() {
         super.reset();
-        meterKE.setPhase(phase);
-        currentKineticEnergy = meterKE.getData();
+        meterKE.setPhase(firstPhase);
+        currentKineticEnergy = meterKE.getDataAsScalar();
     }
 
     /**
@@ -91,7 +92,7 @@ public abstract class IntegratorMD extends Integrator {
         }
     }
     
-    public static class ThermostatType extends etomica.data.DataType {
+    public static class ThermostatType extends TypedConstant {
         protected ThermostatType(String label) {super(label);}       
         public Constants.TypedConstant[] choices() {return CHOICES;}
     }
@@ -136,7 +137,7 @@ public abstract class IntegratorMD extends Integrator {
                 for (int i=0; i<phase.length; i++) {
                     scaleMomenta(phase[i]);
                 }
-                currentKineticEnergy = meterKE.getData();
+                currentKineticEnergy = meterKE.getDataAsScalar();
             }
             else if (thermostat == ANDERSEN) {
                 for (int i=0; i<phase.length; i++) {
@@ -200,7 +201,8 @@ public abstract class IntegratorMD extends Integrator {
         atomIterator.setPhase(aPhase);
         atomIterator.reset();
         // calculate current kinetic temperature
-        double t = meterTemperature.getDataAsScalar(aPhase);
+        meterTemperature.setPhase(aPhase);
+        double t = meterTemperature.getDataAsScalar();
         if (t == temperature) return 1.0;
         double s = Math.sqrt(temperature / t);
         double scale = s;
@@ -235,7 +237,7 @@ public abstract class IntegratorMD extends Integrator {
      * Elementary time step for the MD simulation
      */
     protected double timeStep;
-    protected double[] currentKineticEnergy;
+    protected double currentKineticEnergy;
     protected AtomIteratorLeafAtoms atomIterator;
     protected ThermostatType thermostat;
     private int thermostatCount, thermostatInterval;

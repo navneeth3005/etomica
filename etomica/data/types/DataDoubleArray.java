@@ -1,4 +1,4 @@
-package etomica.data;
+package etomica.data.types;
 
 import java.util.Arrays;
 

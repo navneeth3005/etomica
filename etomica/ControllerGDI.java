@@ -1,6 +1,6 @@
 package etomica ;
 import etomica.data.AccumulatorAverage;
-import etomica.data.meter.DataSourceScalar;
+import etomica.data.DataSourceScalar;
 import etomica.modifier.ModifierGeneral;
 import etomica.utility.Function;
 
