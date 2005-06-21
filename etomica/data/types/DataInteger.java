@@ -55,7 +55,7 @@ public class DataInteger extends Data implements DataNumeric {
     }
 
     public String toString() {
-        return Integer.toString(x);
+        return dataInfo.getLabel() + " " + Integer.toString(x);
     }
     public int x;
 }

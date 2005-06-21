@@ -32,7 +32,7 @@ public class DataGroupFilter extends DataPipe {
     private void initialize(DataGroup dataGroup, int[] indexes) {
         Data[] pushedData = new Data[indexes.length];
         for (int i=0; i<indexes.length; i++) {
-            pushedData[i] = (Data)dataGroup.getData(indexes[i]).clone();
+            pushedData[i] = dataGroup.getData(indexes[i]).makeCopy();
         }
         pushedDataGroup = new DataGroup(dataGroup.getDataInfo(),pushedData);
     }

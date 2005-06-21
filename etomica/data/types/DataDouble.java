@@ -90,7 +90,7 @@ public class DataDouble extends Data implements DataArithmetic {
     }
     
     public String toString() {
-        return Double.toString(x);
+        return dataInfo.getLabel() + " " + Double.toString(x);
     }
     public double x;
 }

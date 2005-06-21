@@ -1,10 +1,7 @@
 package etomica.data.types;
 
-import java.util.Arrays;
-
 import etomica.Data;
 import etomica.DataInfo;
-import etomica.utility.Function;
 
 /**
  * Data object that wraps two arrays of double, such that one is considered
@@ -20,7 +17,7 @@ import etomica.utility.Function;
 /*
  * History Created on Jun 15, 2005 by kofke
  */
-public class DataFunction extends Data implements DataArithmetic {
+public class DataFunction extends DataDoubleArray {
 
     /**
      * Function is x(t).
@@ -28,7 +25,8 @@ public class DataFunction extends Data implements DataArithmetic {
      * @param tDataInfo  dataInfo for the independent variable
      */
     public DataFunction(DataInfo xDataInfo, DataInfo tDataInfo) {
-        super(dataInfo);
+        super(xDataInfo);
+        t = new DataDoubleArray(tDataInfo);
     }
 
     /**
@@ -36,7 +34,7 @@ public class DataFunction extends Data implements DataArithmetic {
      */
     public DataFunction(DataFunction data) {
         super(data);
-        x = data.x;
+        t = (DataDoubleArray)data.t.makeCopy();
     }
     
     /**
@@ -48,92 +46,22 @@ public class DataFunction extends Data implements DataArithmetic {
     }
 
     public void E(Data y) {
-        System.arraycopy(((DataFunction) y).x, 0, x, 0, x.length);
-    }
-
-    public void PE(DataArithmetic y) {
-        double[] yx = ((DataFunction) y).x;
-        for (int i = 0; i < x.length; i++) {
-            x[i] += yx[i];
-        }
-
-    }
-
-    public void ME(DataArithmetic y) {
-        double[] yx = ((DataFunction) y).x;
-        for (int i = 0; i < x.length; i++) {
-            x[i] -= yx[i];
-        }
-    }
-
-    public void TE(DataArithmetic y) {
-        double[] yx = ((DataFunction) y).x;
-        for (int i = 0; i < x.length; i++) {
-            x[i] *= yx[i];
-        }
-
-    }
-
-    public void DE(DataArithmetic y) {
-        double[] yx = ((DataFunction) y).x;
-        for (int i = 0; i < x.length; i++) {
-            x[i] /= yx[i];
-        }
-
-    }
-
-    public void E(double y) {
-        Arrays.fill(x, y);
-    }
-
-    public void PE(double y) {
-        for (int i = 0; i < x.length; i++) {
-            x[i] += y;
-        }
-    }
-
-    public void TE(double y) {
-        for (int i = 0; i < x.length; i++) {
-            x[i] *= y;
-        }
-    }
-
-    public void map(Function function) {
-        for (int i = 0; i < x.length; i++) {
-            x[i] = function.f(x[i]);
-        }
+        super.E(y);
+        t.E(((DataFunction)y).t);
     }
 
     public void setLength(int n) {
-        x = new double[n];
+        super.setLength(n);
+        t.setLength(n);
     }
 
-    public double[] getData() {
-        return x;
-    }
-
-    public boolean isNaN() {
-        for (int i = 0; i < x.length; i++) {
-            if (Double.isNaN(x[i]))
-                return true;
-        }
-        return false;
-    }
-    
-    public DataArithmetic toArithmetic(DataArithmetic data) {
-        if (data == null) {
-            data = this;
-        }
-        else if (data != this) {
-            data.E(this);
-        }
-        return data;
+    public double[] getTData() {
+        return t.getData();
     }
     
     public String toString() {
-        return x.toString();
+        return dataInfo.getLabel() + " ("+super.toString()+"), ("+t.toString()+")";
     }
 
-    private double[] x;
     private final DataDoubleArray t;
 }

@@ -7,7 +7,7 @@ package etomica;
  *
  * @author David Kofke
  */
-public interface Meter extends DataSource {
+public interface Meter extends DataSource, EtomicaElement {
 
     /**
      * Sets the phase on which the meter performs its measurements.

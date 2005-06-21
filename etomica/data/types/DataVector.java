@@ -2,6 +2,7 @@ package etomica.data.types;
 
 import etomica.Data;
 import etomica.DataInfo;
+import etomica.Space;
 import etomica.space.Vector;
 import etomica.utility.Function;
 
@@ -20,8 +21,9 @@ import etomica.utility.Function;
  */
 public class DataVector extends Data implements DataArithmetic {
 
-    public DataVector(DataInfo dataInfo) {
+    public DataVector(Space space, DataInfo dataInfo) {
         super(dataInfo);
+        x = space.makeVector();
     }
 
     /**
@@ -91,7 +93,7 @@ public class DataVector extends Data implements DataArithmetic {
     }
     
     public String toString() {
-        return x.toString();
+        return dataInfo.getLabel() + " " + x.toString();
     }
-    public Vector x;
+    public final Vector x;
 }

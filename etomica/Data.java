@@ -37,5 +37,5 @@ public abstract class Data {
     
     public abstract void E(Data data);
     
-    private final DataInfo dataInfo;
+    protected final DataInfo dataInfo;
 }

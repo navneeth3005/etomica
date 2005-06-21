@@ -122,7 +122,7 @@ public class DataDoubleArray extends Data implements DataArithmetic {
     }
     
     public String toString() {
-        return x.toString();
+        return dataInfo.getLabel() + " " + x.toString();
     }
 
     private double[] x;

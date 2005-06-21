@@ -60,5 +60,14 @@ public class DataGroup extends Data {
         return data.length;
     }
     
+    public String toString() {
+        StringBuffer string = new StringBuffer(dataInfo.getLabel());
+        for(int i=0; i<data.length; i++) {
+            string.append("\n"); //newline?
+            string.append(data.toString());
+        }
+        return string.toString();
+    }
+    
     private final Data[] data;
 }

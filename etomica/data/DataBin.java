@@ -48,7 +48,7 @@ public class DataBin implements DataSink, DataSource {
      */
     public void putData(Data newData) {
         if(data == null) {
-            data = (Data)newData.clone();
+            data = newData.makeCopy();
         } else {
             data.E(newData);
         }

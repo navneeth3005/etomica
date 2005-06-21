@@ -36,29 +36,23 @@ public class DataSinkConsole implements DataSink, EtomicaElement {
     
     /**
      * Causes the given values to be written to the print stream.
-     * Data are written one value per line, all following a header
-     * based on the data's label and the current unit.
      */
     public void putData(Data data) {
-        out.println(data.getDataInfo().getLabel() + " (" + unit.toString() + ")");
-        for(int i=0; i<data.length; i++) {
-            out.println(data[i]);
-        }
-        out.println();
+        out.println(data.toString());
     }
 
-    /**
-     * @return Returns the unit.
-     */
-    public Unit getUnit() {
-        return unit;
-    }
-    /**
-     * @param unit The unit to set.
-     */
-    public void setUnit(Unit unit) {
-        this.unit = unit;
-    }
+//    /**
+//     * @return Returns the unit.
+//     */
+//    public Unit getUnit() {
+//        return unit;
+//    }
+//    /**
+//     * @param unit The unit to set.
+//     */
+//    public void setUnit(Unit unit) {
+//        this.unit = unit;
+//    }
     
     /**
      * Method called to express incredulity.  Short for

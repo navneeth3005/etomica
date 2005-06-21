@@ -4,7 +4,9 @@ import etomica.DataInfo;
 import etomica.EtomicaElement;
 import etomica.EtomicaInfo;
 import etomica.IntegratorIntervalEvent;
+import etomica.IntegratorIntervalListener;
 import etomica.IntegratorNonintervalEvent;
+import etomica.IntegratorNonintervalListener;
 import etomica.integrator.IntegratorMD;
 import etomica.units.Dimension;
 import etomica.units.Picosecond;
@@ -18,7 +20,7 @@ import etomica.units.Unit;
  */
 
 public class DataSourceCountTime extends DataSourceScalar implements
-		EtomicaElement {
+		IntegratorIntervalListener, IntegratorNonintervalListener, EtomicaElement {
 
 	/**
 	 * Sets up data source with no integrator specified.  Requires
