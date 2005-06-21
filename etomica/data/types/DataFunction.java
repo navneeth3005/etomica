@@ -22,8 +22,29 @@ import etomica.utility.Function;
  */
 public class DataFunction extends Data implements DataArithmetic {
 
+    /**
+     * Function is x(t).
+     * @param xDataInfo  dataInfo for the dependent variable
+     * @param tDataInfo  dataInfo for the independent variable
+     */
     public DataFunction(DataInfo xDataInfo, DataInfo tDataInfo) {
         super(dataInfo);
+    }
+
+    /**
+     * Copy constructor.
+     */
+    public DataFunction(DataFunction data) {
+        super(data);
+        x = data.x;
+    }
+    
+    /**
+     * Returns a copy of this instance.  Returned object has its own instances of
+     * all fields, set equal to the values of this instance's fields.
+     */
+    public Data makeCopy() {
+        return new DataFunction(this);
     }
 
     public void E(Data y) {
@@ -114,5 +135,5 @@ public class DataFunction extends Data implements DataArithmetic {
     }
 
     private double[] x;
-    private DataDoubleArray t;
+    private final DataDoubleArray t;
 }

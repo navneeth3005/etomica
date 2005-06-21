@@ -24,6 +24,22 @@ public class DataVector extends Data implements DataArithmetic {
         super(dataInfo);
     }
 
+    /**
+     * Copy constructor.
+     */
+    public DataVector(DataVector data) {
+        super(data);
+        x = (Vector)data.x.clone();
+    }
+    
+    /**
+     * Returns a copy of this instance.  Returned object has its own instances of
+     * all fields, set equal to the values of this instance's fields.
+     */
+    public Data makeCopy() {
+        return new DataVector(this);
+    }
+
     public void E(Data y) {
         x.E(((DataVector)y).x);
     }

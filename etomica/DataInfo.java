@@ -22,6 +22,15 @@ public class DataInfo implements Cloneable {
     }
     
     /**
+     * Copy constructor.  Makes new instance with fields equal
+     * to those of the given instance.
+     */
+    public DataInfo(DataInfo dataInfo) {
+        this.label = new String(dataInfo.label);
+        this.dimension = dataInfo.dimension;
+    }
+    
+    /**
      * @return Returns the dimension.
      */
     public Dimension getDimension() {

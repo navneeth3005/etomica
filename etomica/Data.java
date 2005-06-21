@@ -13,10 +13,17 @@ package etomica;
  * History
  * Created on Jun 15, 2005 by kofke
  */
-public abstract class Data implements Cloneable {
+public abstract class Data {
 
     public Data(DataInfo dataInfo) {
         this.dataInfo = dataInfo;
+    }
+    
+    /**
+     * Copy constructor, used by subclasses.
+     */
+    protected Data(Data data) {
+        this.dataInfo = new DataInfo(data.dataInfo);
     }
     
     /**
@@ -26,14 +33,7 @@ public abstract class Data implements Cloneable {
         return dataInfo;
     }
     
-    public Object clone() {
-        try {
-            return super.clone();
-        }
-        catch (CloneNotSupportedException e) {
-            throw new Error("Assertion failure");  //can't happen
-        }
-    }
+    public abstract Data makeCopy();
     
     public abstract void E(Data data);
     

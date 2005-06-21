@@ -22,6 +22,22 @@ public class DataInteger extends Data implements DataNumeric {
         super(dataInfo);
     }
 
+    /**
+     * Copy constructor.
+     */
+    public DataInteger(DataInteger data) {
+        super(data);
+        x = data.x;
+    }
+    
+    /**
+     * Returns a copy of this instance.  Returned object has its own instances of
+     * all fields, set equal to the values of this instance's fields.
+     */
+    public Data makeCopy() {
+        return new DataInteger(this);
+    }
+
     public void E(Data y) {
         x = ((DataInteger)y).x;
     }

@@ -122,16 +122,16 @@ public class AccumulatorAverage extends DataAccumulator {
     }
     
     protected void initialize(Data value) {
-        sum = (DataArithmetic)value.clone();
-        sumSquare = (DataArithmetic)value.clone();
-        sumSquareBlock = (DataArithmetic)value.clone();
-        standardDeviation = (DataArithmetic)value.clone();
-        average = (DataArithmetic)value.clone();
-        error = (DataArithmetic)value.clone();
-        blockSum = (DataArithmetic)value.clone();
-        blockSumSq = (DataArithmetic)value.clone();
-        mostRecent = (DataArithmetic)value.clone();
-        mostRecentBlock = (DataArithmetic)value.clone();
+        sum = (DataArithmetic)value.makeCopy();
+        sumSquare = (DataArithmetic)value.makeCopy();
+        sumSquareBlock = (DataArithmetic)value.makeCopy();
+        standardDeviation = (DataArithmetic)value.makeCopy();
+        average = (DataArithmetic)value.makeCopy();
+        error = (DataArithmetic)value.makeCopy();
+        blockSum = (DataArithmetic)value.makeCopy();
+        blockSumSq = (DataArithmetic)value.makeCopy();
+        mostRecent = (DataArithmetic)value.makeCopy();
+        mostRecentBlock = (DataArithmetic)value.makeCopy();
         reset();
         dataGroup = new DataGroup(value.getDataInfo(),new Data[]{(Data)mostRecent,
                 (Data)average,(Data)error,(Data)standardDeviation,(Data)mostRecentBlock});

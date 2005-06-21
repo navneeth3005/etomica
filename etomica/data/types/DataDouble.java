@@ -22,6 +22,22 @@ public class DataDouble extends Data implements DataArithmetic {
     public DataDouble(DataInfo dataInfo) {
         super(dataInfo);
     }
+    
+    /**
+     * Copy constructor.
+     */
+    public DataDouble(DataDouble data) {
+        super(data);
+        x = data.x;
+    }
+    
+    /**
+     * Returns a copy of this instance.  Returned object has its own instances of
+     * all fields, set equal to the values of this instance's fields.
+     */
+    public Data makeCopy() {
+        return new DataDouble(this);
+    }
 
     public void E(Data y) {
         x = ((DataDouble)y).x;

@@ -22,6 +22,22 @@ public class DataDoubleArray extends Data implements DataArithmetic {
         super(dataInfo);
     }
 
+    /**
+     * Copy constructor.
+     */
+    public DataDoubleArray(DataDoubleArray data) {
+        super(data);
+        x = (double[])data.x.clone();
+    }
+    
+    /**
+     * Returns a copy of this instance.  Returned object has its own instances of
+     * all fields, set equal to the values of this instance's fields.
+     */
+    public Data makeCopy() {
+        return new DataDoubleArray(this);
+    }
+
     public void E(Data y) {
         System.arraycopy(((DataDoubleArray) y).x, 0, x, 0, x.length);
     }
