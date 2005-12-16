@@ -14,7 +14,6 @@ import etomica.atom.iterator.AtomIteratorLeafAtoms;
 import etomica.math.geometry.LineSegment;
 import etomica.math.geometry.Polygon;
 import etomica.space.Boundary;
-import etomica.space.ICoordinateAngular;
 import etomica.space.Vector;
 import etomica.species.Species;
 
@@ -95,16 +94,6 @@ public class DisplayPhaseCanvas2D extends DisplayCanvas {
                 yP = baseYP - (sigmaP>>1);
                 g.setColor(wellColor);
                 g.drawOval(xP, yP, sigmaP, sigmaP);
-            }
-            /* Draw the orientation line, if any */
-            if(drawOrientation) {
-                double theta = ((ICoordinateAngular)a.coord).orientation().angle()[0];
-                int dxy = (int)(displayPhase.getToPixels()*((AtomTypeOrientedSphere)a.type).radius(a));
-                int dx = (int)(dxy*Math.cos(theta));
-                int dy = (int)(dxy*Math.sin(theta));
-                g.setColor(Color.red);
-                xP += dxy; yP += dxy;
-                g.drawLine(xP-dx, yP-dy, xP+dx, yP+dy);
             }
 //            a.type.electroType().draw(g, origin, displayPhase.getToPixels(), r);
         } else { // Not a sphere, wall, or one of their derivatives...

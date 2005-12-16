@@ -54,10 +54,6 @@ public final class Space2D extends Space {
         return new Vector2D();
     }
 
-    public etomica.space.Orientation makeOrientation() {
-        return new Orientation();
-    }
-
     public etomica.space.Tensor makeTensor() {
         return new Tensor2D();
     }

@@ -43,8 +43,6 @@ public abstract class Space implements java.io.Serializable {
     
     public abstract Vector makeVector();
     
-    public abstract Orientation makeOrientation();
-    
     public abstract Tensor makeTensor();
     
     public abstract RotationTensor makeRotationTensor();

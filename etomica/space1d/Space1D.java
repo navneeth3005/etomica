@@ -52,11 +52,6 @@ public final class Space1D extends Space {
         return new Vector1D();
     }
 
-    public etomica.space.Orientation makeOrientation() {
-        System.out.println("Orientation class not implemented in 1D");
-        return null;
-    }
-
     public etomica.space.Tensor makeTensor() {
         return new Tensor1D();
     }
