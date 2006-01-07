@@ -20,7 +20,7 @@ import etomica.junit.UnitTestUtil;
  * @author Ken Benjamin and David Kofke
  *  
  */
-public abstract class IteratorTestAbstract extends TestCase {
+public class IteratorTestAbstract extends TestCase {
 
 
     /**

@@ -9,7 +9,7 @@ import etomica.atom.SpeciesAgent;
 import etomica.atom.SpeciesRoot;
 import etomica.atom.iterator.AtomIteratorSequenceAdjacent;
 import etomica.atom.iterator.IteratorDirective;
-import etomica.junit.UnitTest;
+import etomica.junit.UnitTestUtil;
 
 
 /**
@@ -23,11 +23,11 @@ import etomica.junit.UnitTest;
  * History
  * Created on Jun 14, 2005 by kofke
  */
-public class AtomIteratorSequenceAdjacentTest extends IteratorTest {
+public class AtomIteratorSequenceAdjacentTest extends IteratorTestAbstract {
 
     public AtomIteratorSequenceAdjacentTest() {
         super();
-        UnitTest.VERBOSE = false;
+        UnitTestUtil.VERBOSE = false;
     }
 
     public void setUp() {
@@ -37,7 +37,7 @@ public class AtomIteratorSequenceAdjacentTest extends IteratorTest {
     
     public void testIteration() {
         int nAtoms = 11;
-        SpeciesRoot root = UnitTest.makeStandardSpeciesTree(
+        SpeciesRoot root = UnitTestUtil.makeStandardSpeciesTree(
                 new int[] {nAtoms},2,new int[] {nAtoms},null,null);
         AtomTreeNodeGroup rootNode = (AtomTreeNodeGroup)root.node;
         SpeciesAgent agent = (SpeciesAgent)rootNode.getDescendant(new int[] {0,0});
