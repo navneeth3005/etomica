@@ -5,7 +5,6 @@ import java.io.IOException;
 import etomica.space.CoordinateFactorySphere;
 import etomica.space.ICoordinate;
 import etomica.space.Space;
-import etomica.util.Arrays;
 import etomica.util.EtomicaObjectInputStream;
 
  /**
@@ -21,14 +20,6 @@ import etomica.util.EtomicaObjectInputStream;
   * in the species hierarchy
   * <li>an instance of AtomLinker (fieldname: seq, for sequencer) that places
   * it in the linked list of children held by its parenttom holds an object
-  * <li>an object (fieldname: ia, for integrator agent) that may be used to
-  * store information needed by the integrator
-  * <li>an array of objects (field name: allAtomAgents) that can be used to
-  * store in each atom any object needed by another class; such a class must
-  * implement Atom.AgentSource and request its object be stored in every atom by
-  * invoking Atom.requestAgentIndex before any atoms are constructed. The
-  * integer returned by this method will indicate the location in the
-  * allAtomAgents array where the agent-source's object will be held.
   * </ul>
   * <p>
   * @author David Kofke, Andrew Schultz, and C. Daniel Barnes
@@ -184,37 +175,12 @@ public class Atom implements AtomSet, Comparable, java.io.Serializable {
     public final AtomLinker seq;
     
     /**
-     * An array of agents, or objects made by an agent source and added to this
-     * atom (and all other atoms) to perform some function or store data for the source.
-     * Placement of agents in this array is managed by the Atom class.  An agent
-     * source registers itself with Atom via the Atom.requestAgentIndex method, and
-     * the integer returned with that call indicates the place in this array where
-     * the source can find its agent in this atom.
-     */
-//    public Object[] allatomAgents;
-    
-    /**
-     * Array used to record all agent sources requesting to place an agent in every atom.
-     */
-    private static AgentSource[] agentSource = new AgentSource[0];
-    
-    /**
      * Counter for number of times an atom is instantiated without a parent.  Used
      * to assign a unique index to such atoms.
      */
     private static int INSTANCE_COUNT = 0;
     
     private int globalIndex = -1;
-    
-    /**
-     * Adds given agent source to allatomAgent-source array and returns index
-     * indicating where in atom's allatomAgent-array the source's agent will
-     * be placed.
-     */
-    public static int requestAgentIndex(AgentSource aSource) {
-        agentSource = (AgentSource[])Arrays.addObject(agentSource, aSource);
-        return agentSource.length - 1;
-    }
     
     private void readObject(java.io.ObjectInputStream in)
     throws IOException, ClassNotFoundException
@@ -236,4 +202,4 @@ public class Atom implements AtomSet, Comparable, java.io.Serializable {
         public void releaseAgent(Object agent); 
     }
     
-}//end of Atom
+}
