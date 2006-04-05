@@ -1,4 +1,5 @@
 package etomica.tests;
+import etomica.action.PhaseImposePbc;
 import etomica.action.activity.ActivityIntegrate;
 import etomica.action.activity.Controller;
 import etomica.atom.AtomSourceRandomLeafSeq;
@@ -67,6 +68,8 @@ public class TestLJMC3D extends Simulation {
         new ConfigurationFile(space,"LJMC3D"+Integer.toString(numAtoms)).initializeCoordinates(phase);
         integrator.setPhase(phase);
         ((PotentialMasterCell)potentialMaster).updateTypeList(phase);
+        PhaseImposePbc imposePBC = new PhaseImposePbc(phase);
+        imposePBC.actionPerformed();
         ((PotentialMasterCell)potentialMaster).getNbrCellManager(phase).assignCellAll();
 //        WriteConfiguration writeConfig = new WriteConfiguration("LJMC3D"+Integer.toString(numAtoms),phase,1);
 //        integrator.addListener(writeConfig);
