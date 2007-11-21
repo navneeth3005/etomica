@@ -74,7 +74,6 @@ public class MCMoveRotate extends MCMoveBoxStep {
     public double getA() {return 1.0;}
     
     public double getB() {
-        energyMeter.setTarget(molecule);
         return -(uNew - uOld);
     }
     
