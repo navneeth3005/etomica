@@ -48,7 +48,7 @@ public class P3BondAngle extends Potential {
             dtheta = Math.acos(costheta);
         }
         dtheta -= angle;
-        return 0.5*epsilon*dtheta*dtheta;
+        return epsilon*dtheta*dtheta;
     }
 
     /**

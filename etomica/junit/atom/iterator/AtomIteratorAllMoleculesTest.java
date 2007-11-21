@@ -23,10 +23,7 @@ public class AtomIteratorAllMoleculesTest extends IteratorTestAbstract {
         int[] n0 = new int[] { 10, 1, 0, 0, 0};
         int nA0 = 5;
         int[] n1 = new int[] { 5, 1, 6, 0, 1};
-        int[] n2 = new int[] { 1, 7, 2, 0, 0};
-        int[] n2Tree = new int[] { 3, 4 };
-        ISimulation sim = UnitTestUtil.makeStandardSpeciesTree(n0, nA0, n1, n2,
-                n2Tree);
+        ISimulation sim = UnitTestUtil.makeStandardSpeciesTree(n0, nA0, n1);
 
         Species[] species = sim.getSpeciesManager().getSpecies();
 

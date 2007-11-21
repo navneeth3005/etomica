@@ -10,7 +10,7 @@ import etomica.atom.AtomPair;
 import etomica.atom.AtomSet;
 import etomica.atom.AtomSetSinglet;
 import etomica.atom.IAtom;
-import etomica.atom.IAtomGroup;
+import etomica.atom.IMolecule;
 import etomica.atom.IAtomKinetic;
 import etomica.atom.AtomAgentManager.AgentSource;
 import etomica.atom.iterator.AtomsetIterator;
@@ -177,7 +177,7 @@ public class IntegratorHard extends IntegratorMD implements AgentSource, BoxList
                         System.out.println(a+" collision with "+agent.collisionPartner+" "+agent.collisionPotential+" at "+agent.collisionTime());
                     }
                 }
-                if (debugPair.atom0 != null && debugPair.atom1 != null && !(debugPair.atom0 instanceof IAtomGroup && debugPair.atom1 instanceof IAtomGroup)) {
+                if (debugPair.atom0 != null && debugPair.atom1 != null && !(debugPair.atom0 instanceof IMolecule && debugPair.atom1 instanceof IMolecule)) {
                     IVector dr = box.getSpace().makeVector();
                     IVector dv = box.getSpace().makeVector();
 
@@ -193,25 +193,19 @@ public class IntegratorHard extends IntegratorMD implements AgentSource, BoxList
                     if (Debug.LEVEL > 1 || Math.sqrt(r2) < Debug.ATOM_SIZE-1.e-11) {
                         System.out.println("distance between "+debugPair+" is "+Math.sqrt(r2));
                         if (Debug.LEVEL > 2 || Math.sqrt(r2) < Debug.ATOM_SIZE-1.e-11) {
-                            dr.Ea1Tv1(collisionTimeStep,((IAtomKinetic)atom0).getVelocity());
-                            dr.PE(((IAtomKinetic)atom0).getPosition());
+                            dr.Ea1Tv1(collisionTimeStep,atom0.getVelocity());
+                            dr.PE(atom0.getPosition());
                             System.out.println(atom0+" coordinates "+dr);
-                            dr.Ea1Tv1(collisionTimeStep,((IAtomKinetic)atom1).getVelocity());
-                            dr.PE(((IAtomKinetic)atom1).getPosition());
+                            dr.Ea1Tv1(collisionTimeStep,atom1.getVelocity());
+                            dr.PE(atom1.getPosition());
                             System.out.println(atom1+" coordinates "+dr);
                         }
                     }
-                    if (Debug.LEVEL > 1) {
-                        PotentialHard p = ((Agent)agentManager.getAgent(debugPair.atom0)).collisionPotential;
-                        System.out.println(debugPair.atom0+" collision time "+((Agent)agentManager.getAgent(debugPair.atom0)).collisionTime()+" with "+((Agent)agentManager.getAgent(debugPair.atom0)).collisionPartner
-                                +" with potential "+(p!=null ? p.getClass() : null));
+                    else if (Debug.LEVEL > 2 && !(debugPair.atom0 instanceof IMolecule)) {
+                        dr.Ea1Tv1(collisionTimeStep,((IAtomKinetic)debugPair.atom0).getVelocity());
+                        dr.PE(((IAtomKinetic)debugPair.atom0).getPosition());
+                        System.out.println(debugPair.atom0+" coordinates "+dr);
                     }
-                }
-                else if (Debug.LEVEL > 2 && !(debugPair.atom0 instanceof IAtomGroup)) {
-                    IVector dr = potential.getSpace().makeVector();
-                    dr.Ea1Tv1(collisionTimeStep,((IAtomKinetic)debugPair.atom0).getVelocity());
-                    dr.PE(((IAtomKinetic)debugPair.atom0).getPosition());
-                    System.out.println(debugPair.atom0+" coordinates "+dr);
                 }
             }
 
@@ -231,6 +225,10 @@ public class IntegratorHard extends IntegratorMD implements AgentSource, BoxList
                 updateAtoms((AtomPair)atoms);
             }
             findNextCollider(); //this sets colliderAgent for the next collision
+            if (Debug.ON && colliderAgent.atom == atoms.getAtom(0) && (atoms.getAtomCount() == 2 && colliderAgent.collisionPartner == atoms.getAtom(1))
+                    && colliderAgent.collisionTime() == collisionTimeStep) {
+                throw new RuntimeException("repeating collision");
+            }
             
             oldTime = collisionTimeStep;
             collisionTimeStep = (colliderAgent != null) ? colliderAgent.collisionTime() : Double.POSITIVE_INFINITY;
@@ -666,7 +664,7 @@ public class IntegratorHard extends IntegratorMD implements AgentSource, BoxList
                  pair = iterator.next()) {
                 IAtom aPartner = ((Agent)integratorAgentManager.getAgent(pair.getAtom(0))).collisionPartner();
                 if (Debug.ON && Debug.DEBUG_NOW && ((Debug.allAtoms(pair) && Debug.LEVEL > 1) || (Debug.anyAtom(pair) && Debug.LEVEL > 2))) {
-                    System.out.println(pair.getAtom(1)+" thought it would collide with "+aPartner);
+                    System.out.println(pair.getAtom(0)+" thought it would collide with "+aPartner);
                 }
                 if(aPartner == pair.getAtom(1)) {
                     if (Debug.ON && Debug.DEBUG_NOW && (Debug.allAtoms(pair) || Debug.LEVEL > 2)) {

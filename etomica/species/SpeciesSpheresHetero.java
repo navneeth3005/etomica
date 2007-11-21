@@ -65,7 +65,8 @@ public class SpeciesSpheresHetero extends Species {
      * molecules taken from the simulation.
      */
     public SpeciesSpheresHetero(ISimulation sim, Element[] leafElements, int nA) {
-        super(new AtomFactoryHetero(sim));
+        super();
+        setMoleculeFactory(new AtomFactoryHetero(sim, this));
         if (leafElements.length > 0) {
             AtomFactoryMono[] childFactories = new AtomFactoryMono[leafElements.length];
             for (int i=0; i<leafElements.length; i++) {

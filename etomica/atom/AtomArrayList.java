@@ -395,6 +395,36 @@ public class AtomArrayList implements AtomSet,
         
         return oldAtom;
     }
+    
+    /**
+     * Moves Atom at oldIndex to newIndex.  After this method returns, Atom at
+     * oldIndex is null.  The hole can be filled with setAtomAtIndex or another
+     * call to move.  If newIndex is the index corresponding to the element
+     * after the last atom, the AtomArrayList's size is not incremented -- you
+     * must call adjustSize to update the size.  newIndex may not correspond to
+     * elements beyond that.
+     */
+    public void move(int oldIndex, int newIndex) {
+        if (newIndex > size) {
+            throw new IllegalArgumentException("You can move the atom to the end, but not beyond it");
+        }
+        ensureCapacity(newIndex+1);
+        elementData[newIndex] = elementData[oldIndex];
+        elementData[oldIndex] = null;
+    }
+    
+    public void adjustSize(int sizeAdjustment) {
+        if (-sizeAdjustment > size) {
+            throw new RuntimeException("Can't make the size negative");
+        }
+        ensureCapacity(size + sizeAdjustment);
+        size += sizeAdjustment;
+    }
+    
+    public void setAtomAtIndex(IAtom newAtom, int index) {
+        ensureCapacity(index);
+        elementData[index] = newAtom;
+    }
 
     /**
      * Removes all of the elements from this list.  The list will
