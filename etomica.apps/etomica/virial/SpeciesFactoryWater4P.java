@@ -1,6 +1,5 @@
 package etomica.virial;
 
-import etomica.atom.AtomTypeGroup;
 import etomica.config.Conformation;
 import etomica.models.water.SpeciesWater4P;
 import etomica.simulation.ISimulation;
@@ -11,14 +10,16 @@ import etomica.species.Species;
  * SpeciesFactory that makes SpeciesWater
  */
 public class SpeciesFactoryWater4P implements SpeciesFactory, java.io.Serializable {
+
     public SpeciesFactoryWater4P(Conformation conformation) {
         this.conformation = conformation;
     }
     public Species makeSpecies(ISimulation sim) {
         SpeciesWater4P species = new SpeciesWater4P(sim);
-        ((AtomTypeGroup)species.getMoleculeType()).setConformation(conformation);
+        species.getMoleculeType().setConformation(conformation);
         return species;
     }
     
+    private static final long serialVersionUID = 1L;
     protected Conformation conformation;
 }

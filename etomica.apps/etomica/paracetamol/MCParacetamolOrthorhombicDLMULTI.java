@@ -5,7 +5,6 @@ import etomica.action.WriteConfiguration;
 import etomica.action.WriteConfigurationDLPOLY;
 import etomica.action.activity.ActivityIntegrate;
 import etomica.action.activity.Controller;
-import etomica.atom.AtomTypeGroup;
 import etomica.box.Box;
 import etomica.data.DataLogger;
 import etomica.data.DataPump;
@@ -91,7 +90,7 @@ public class MCParacetamolOrthorhombicDLMULTI extends Simulation {
         
         ConformationParacetamolOrthorhombic conformation = new ConformationParacetamolOrthorhombic(space);
         species = new SpeciesParacetamol(this);
-        ((AtomTypeGroup)species.getMoleculeType()).setConformation(conformation);
+        species.getMoleculeType().setConformation(conformation);
         getSpeciesManager().addSpecies(species);
         
         box = new Box(this);

@@ -1,11 +1,9 @@
 package etomica.virial.simulations;
 
-import java.awt.Color;
-
 import etomica.action.Action;
 import etomica.atom.AtomType;
-import etomica.atom.AtomTypeGroup;
 import etomica.atom.AtomTypeLeaf;
+import etomica.atom.AtomTypeMolecule;
 import etomica.atom.AtomTypeSphere;
 import etomica.atom.iterator.ApiBuilder;
 import etomica.atom.iterator.Atomset3IteratorIndexList;
@@ -14,9 +12,7 @@ import etomica.data.AccumulatorAverage;
 import etomica.data.AccumulatorRatioAverage;
 import etomica.data.types.DataDoubleArray;
 import etomica.data.types.DataGroup;
-import etomica.graphics.ColorSchemeByType;
 import etomica.graphics.SimulationGraphic;
-import etomica.models.water.SpeciesWater4P;
 import etomica.paracetamol.ApiIndexList;
 import etomica.potential.P2LennardJones;
 import etomica.potential.P3BondAngle;
@@ -104,7 +100,7 @@ public class VirialAlkane {
 //        sim.integratorOS.setStepFreq0(1);
 
         SpeciesAlkane species = (SpeciesAlkane)sim.species;
-        AtomTypeGroup alkaneType = (AtomTypeGroup)species.getMoleculeType();
+        AtomTypeMolecule alkaneType = species.getMoleculeType();
         AtomTypeLeaf typeCH3 = (AtomTypeLeaf)alkaneType.getChildTypes()[0];
         AtomTypeLeaf typeCH2 = (AtomTypeLeaf)alkaneType.getChildTypes()[1];
         pTargetGroup.addPotential(p2CH2, ApiBuilder.makeIntergroupTypeIterator(new AtomType[]{typeCH2, typeCH2}));

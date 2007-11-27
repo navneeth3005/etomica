@@ -6,8 +6,8 @@ import java.io.IOException;
 import etomica.atom.AtomArrayList;
 import etomica.atom.AtomSet;
 import etomica.atom.AtomTypeSphere;
-import etomica.atom.IAtom;
 import etomica.atom.IAtomPositioned;
+import etomica.atom.IMolecule;
 import etomica.box.Box;
 import etomica.chem.elements.Tin;
 import etomica.config.Configuration;
@@ -68,10 +68,10 @@ public class VibrationalModesMEAMadatom extends Simulation{
         getSpeciesManager().addSpecies(snAdatom);
         getSpeciesManager().addSpecies(movable);
          
-        ((AtomTypeSphere)snFix.getMoleculeType()).setDiameter(3.022); 
-        ((AtomTypeSphere)sn.getMoleculeType()).setDiameter(3.022);
-        ((AtomTypeSphere)snAdatom.getMoleculeType()).setDiameter(3.022);
-        ((AtomTypeSphere)movable.getMoleculeType()).setDiameter(3.022);
+        ((AtomTypeSphere)snFix.getLeafType()).setDiameter(3.022); 
+        ((AtomTypeSphere)sn.getLeafType()).setDiameter(3.022);
+        ((AtomTypeSphere)snAdatom.getLeafType()).setDiameter(3.022);
+        ((AtomTypeSphere)movable.getLeafType()).setDiameter(3.022);
         
         /**
         //Ag
@@ -195,11 +195,13 @@ public class VibrationalModesMEAMadatom extends Simulation{
         config.initializeCoordinates(box); 
         
         // Sn
-        IAtom iAtom = snAdatom.getMoleculeFactory().makeAtom();
-        box.getAgent(snAdatom).addChildAtom(iAtom);
-        ((IAtomPositioned)iAtom).getPosition().setX(0, 10.0);
-        ((IAtomPositioned)iAtom).getPosition().setX(1, 0.1);
-        ((IAtomPositioned)iAtom).getPosition().setX(2, -0.1);
+        IMolecule adMolecule = (IMolecule)snAdatom.getMoleculeFactory().makeAtom();
+        box.addMolecule(adMolecule);
+        IAtomPositioned adAtom = (IAtomPositioned)adMolecule.getChildList().getAtom(0);
+
+        adAtom.getPosition().setX(0, 10.0);
+        adAtom.getPosition().setX(1, 0.1);
+        adAtom.getPosition().setX(2, -0.1);
         
         /**
         //Ag
@@ -223,16 +225,18 @@ public class VibrationalModesMEAMadatom extends Simulation{
         AtomArrayList movableList = new AtomArrayList();
         AtomSet loopSet = box.getMoleculeList(sn);
         
-        for (int i=0; i<loopSet.getAtomCount(); i++){   
-            rij.Ev1Mv2(((IAtomPositioned)iAtom).getPosition(),((IAtomPositioned)loopSet.getAtom(i)).getPosition());
+        for (int i=0; i<loopSet.getAtomCount(); i++){
+            rij.Ev1Mv2(adAtom.getPosition(),((IAtomPositioned)((IMolecule)loopSet.getAtom(i)).getChildList().getAtom(0)).getPosition()); 
             if((rij.squared())<38.0){
                movableList.add(loopSet.getAtom(i));
             } 
         }
         for (int i=0; i<movableList.getAtomCount(); i++){
-            ((IAtomPositioned)box.addNewMolecule(movable)).getPosition().E(((IAtomPositioned)movableList.getAtom(i)).getPosition());
-            box.removeMolecule(movableList.getAtom(i));
-        }      
+            IMolecule oldMolecule = (IMolecule)movableList.getAtom(i);
+            IMolecule newMolecule = ((IMolecule)box.addNewMolecule(movable));
+            ((IAtomPositioned)newMolecule.getChildList().getAtom(0)).getPosition().E(((IAtomPositioned)oldMolecule.getChildList().getAtom(0)).getPosition());
+            box.removeMolecule(oldMolecule);
+        }
         String fTail = "-6121967.366429915_saddle_38cut-Fine";
         
         ConfigurationFile configFile = new ConfigurationFile(fTail);
