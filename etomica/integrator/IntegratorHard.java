@@ -122,6 +122,12 @@ public class IntegratorHard extends IntegratorMD implements AgentSource, BoxList
      * Steps all atoms across time interval timeStep, handling all intervening collisions.
      */
     public void doStepInternal() {
+        if (Double.isInfinite(currentPotentialEnergy)) {
+            // we were overlapped at some point.  try recalculating the PE now
+            // so we can start re-tracking the PE once we aren't overlapped.
+            meterPE.setBox(box);
+            currentPotentialEnergy = meterPE.getDataAsScalar();
+        }
         super.doStepInternal();
         findNextCollider();
         collisionTimeStep = (colliderAgent != null) ? colliderAgent.collisionTime() : Double.POSITIVE_INFINITY;
@@ -447,17 +453,11 @@ public class IntegratorHard extends IntegratorMD implements AgentSource, BoxList
     /**
      * Updates collision times appropriately after scaling momenta.
      */
-    protected double scaleMomenta() {
-        double s = super.scaleMomenta();
-        double rs = 1.0/s;
-        AtomSet leafList = box.getLeafList();
-        int nLeaf = leafList.getAtomCount();
-        for (int iLeaf=0; iLeaf<nLeaf; iLeaf++) {
-            IAtom atom = leafList.getAtom(iLeaf);
-            ((Agent)agentManager.getAgent(atom)).eventLinker.sortKey *= rs;
-        }
-        // don't need to update eventTree because event order didn't change
-        return s;
+    protected void scaleMomenta() {
+        super.scaleMomenta();
+        // super.scaleMomenta alters the velocities, so we need to 
+        // recalculate collision times
+        resetCollisionTimes();
     }
 
     /**
