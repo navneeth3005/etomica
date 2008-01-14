@@ -189,11 +189,11 @@ public class TestHexaneFileConfig extends Simulation {
         int xLng = 4;
         int yLng = 4;
         int zLng = 3;
-        long nSteps = 100;
+        long nSteps = 1000;
         // Monson reports data for 0.373773507616 and 0.389566754417
         double density = 0.373773507616;
         double den = 0.37;
-        boolean graphic = false;
+        boolean graphic = true;
   
         //spaces are now singletons; we can only have one instance, so we call
         // it with this method, not a "new" thing.
@@ -252,6 +252,7 @@ public class TestHexaneFileConfig extends Simulation {
             BoxInflateDeformable pid = new BoxInflateDeformable(sim.getSpace());
             MeterPressureByVolumeChange meterPressure = new MeterPressureByVolumeChange(sim.getSpace(), pid);
             meterPressure.setIntegrator(sim.integrator);
+            meterPressure.setX(-0.001, 0.001, 20);
             AccumulatorAverageFixed pressureAccumulator = new AccumulatorAverageFixed();
             DataPump pressureManager = new DataPump(meterPressure, pressureAccumulator);
             pressureAccumulator.setBlockSize(50);
@@ -290,18 +291,19 @@ public class TestHexaneFileConfig extends Simulation {
             sim.activityIntegrate.setMaxSteps(nSteps);
             sim.getController().actionPerformed();
 
-//            //Write out the final configurations for further use.
+            //Write out the final configurations for further use.
 //            PDBWriter pdbWriter = new PDBWriter(sim.box);
 //            pdbWriter.setFileName("calcHex.pdb");
 //            pdbWriter.actionPerformed();
 
             WriteConfiguration writer = new WriteConfiguration();
             writer.setBox(sim.box);
+            writer.setDoApplyPBC(false);
             writer.setConfName("hexane");
             writer.actionPerformed();
             
             double avgPressure = 0.0;  
-            int leng = 10;
+            int leng = 20;
             double[] pressies = new double[leng];
             double[] lnXs = new double[leng];
             double[] scalingFactors = new double[leng];
@@ -332,6 +334,9 @@ public class TestHexaneFileConfig extends Simulation {
             
             avgPressure = ((DataDoubleArray)((DataGroup)pressureAccumulator.getData()).getData(StatType.AVERAGE.index)).getValue(0);
             System.out.println("Avg Pres = "+ avgPressure);
+            
+
+//            System.out.println(sim.integrator.meterPE.getDataAsScalar());
         }
     }
 }

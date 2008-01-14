@@ -4,13 +4,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import etomica.action.WriteConfiguration;
+import etomica.action.activity.ActivityIntegrate;
 import etomica.atom.AtomAgentManager;
 import etomica.atom.AtomArrayList;
+import etomica.atom.AtomSet;
 import etomica.atom.IAtom;
 import etomica.atom.IAtomPositioned;
+import etomica.atom.IMolecule;
 import etomica.atom.AtomAgentManager.AgentSource;
 import etomica.atom.iterator.IteratorDirective;
 import etomica.box.Box;
+import etomica.config.ConfigurationFile;
 import etomica.data.meter.MeterPotentialEnergy;
 import etomica.exception.ConfigurationOverlapException;
 import etomica.integrator.IntegratorBox;
@@ -43,6 +47,7 @@ public class IntegratorDimerMin extends IntegratorBox implements AgentSource {
 	public IRandom random;
 	public FileWriter fileWriter;
 	public MeterPotentialEnergy energyBox0, energyBoxMin;
+	public ActivityIntegrate activityIntegrate;
 
 	public IVectorRandom [] N, Nstar;
 	public IVector NDelta, NstarDelta;
@@ -66,14 +71,16 @@ public class IntegratorDimerMin extends IntegratorBox implements AgentSource {
 	public double Fprimerot;
 	public double sinDtheta, cosDtheta;
 	public int rotCounter, counter;
-	public boolean rotate;
+	public boolean rotate, normalD;
+	public String file;
+	public WriteConfiguration writer;
 	
 	
-	public IntegratorDimerMin(ISimulation sim, PotentialMaster potentialMaster, Species[] species) {
-		this(sim, potentialMaster, sim.getRandom(), 1.0, species);
+	public IntegratorDimerMin(ISimulation sim, PotentialMaster potentialMaster, Species[] species, String fileName, Boolean normalDir) {
+		this(sim, potentialMaster, sim.getRandom(), 1.0, species, fileName, normalDir);
 	}
 	
-	public IntegratorDimerMin(ISimulation aSim, PotentialMaster potentialMaster, IRandom arandom, double temperature, Species[] aspecies) {
+	public IntegratorDimerMin(ISimulation aSim, PotentialMaster potentialMaster, IRandom arandom, double temperature, Species[] aspecies, String fileName, Boolean normalDir) {
 		super(potentialMaster, temperature);
 		this.random = arandom;
 		this.sim = aSim;
@@ -81,6 +88,8 @@ public class IntegratorDimerMin extends IntegratorBox implements AgentSource {
 		this.forceMin = new PotentialCalculationForceSum();
 		this.allatoms = new IteratorDirective();
 		this.movableSpecies = aspecies;
+		this.file = fileName;
+		this.normalD = normalDir;
 		
 		stepLength = 10E-3;
 		deltaR = 10E-4;
@@ -92,14 +101,9 @@ public class IntegratorDimerMin extends IntegratorBox implements AgentSource {
 		rotate = true;
 		
 		sinDtheta = Math.sin(dTheta)*deltaR;
-		cosDtheta = Math.cos(dTheta)*deltaR;
-		
-		
-				
+		cosDtheta = Math.cos(dTheta)*deltaR;				
 	}
-	
-
-	
+		
 	public void doStepInternal(){
 		
 		// Orient half-dimer on minimum energy path
@@ -108,8 +112,16 @@ public class IntegratorDimerMin extends IntegratorBox implements AgentSource {
 		// Step half-dimer toward the local energy minimum
 		walkDimer();
 		
-		System.out.println(((IAtomPositioned)list.getAtom(0)).getPosition().x(0)+"     "+((IAtomPositioned)list.getAtom(0)).getPosition().x(1)+"     "+((IAtomPositioned)list.getAtom(0)).getPosition().x(2)
-					+"     "+((IAtomPositioned)listMin.getAtom(0)).getPosition().x(0)+"     "+((IAtomPositioned)listMin.getAtom(0)).getPosition().x(1)+"     "+((IAtomPositioned)listMin.getAtom(0)).getPosition().x(2));
+		System.out.println(((IAtomPositioned)list.getAtom(0)).getPosition().x(0)+"     "+((IAtomPositioned)list.getAtom(0)).getPosition().x(1)+"     "+((IAtomPositioned)list.getAtom(0)).getPosition().x(2));
+		
+		// Write energy to file
+        try{
+            fileWriter = new FileWriter(file+"_minimum_path");
+            fileWriter.write(ElectronVolt.UNIT.fromSim(energyBox0.getDataAsScalar())+"\n");
+            fileWriter.close();
+        }catch(IOException e) {
+          
+        }
 		
 		// Check and see if we're at the minimum energy
 		energyDimer();
@@ -144,7 +156,6 @@ public class IntegratorDimerMin extends IntegratorBox implements AgentSource {
 	        Fpara = new IVector [movableAtoms];
 	        
 	        for (int i=0; i<movableAtoms; i++){
-	            
 	            N[i] = (IVectorRandom)box.getSpace().makeVector();
 	            Nstar[i] = (IVectorRandom)box.getSpace().makeVector();
 	            F0[i] = box.getSpace().makeVector();
@@ -163,22 +174,8 @@ public class IntegratorDimerMin extends IntegratorBox implements AgentSource {
 	            Fmin2star[i] = box.getSpace().makeVector();
 	            Fstarperp[i] = box.getSpace().makeVector();
 	            Fpara[i] = box.getSpace().makeVector();
-	        }
-		
-		// Use random unit array for N to generate dimer from saddle
-		
-        // Normalize N
-        double mag = 0;
-        for (int i=0; i<N.length; i++){ 
-            N[i].setRandomSphere(random);
-            mag += N[i].squared();
-        }
-        
-        mag = 1.0 / Math.sqrt(mag);
-        for (int i=0; i<N.length; i++){
-            N[i].TE(mag);
-        }
-	
+	        }  
+	        
 		boxMin = new Box(box.getBoundary());
         sim.addBox(boxMin);
          
@@ -201,39 +198,35 @@ public class IntegratorDimerMin extends IntegratorBox implements AgentSource {
 			boxMin.setNMolecules(species[i], box.getNMolecules(species[i]));
 		}
 		
-		// Setup atoms at saddle point, and create dimer for minimum path tracing
-		for(int i=0; i<box.atomCount(); i++){
-			((IAtomPositioned)boxMin.getLeafList().getAtom(i)).getPosition().E(((IAtomPositioned)box.getLeafList().getAtom(i)).getPosition());	
-		}
-				
+		// Read in coordinates for boxMin atom locations
+		ConfigurationFile configFile = new ConfigurationFile(file+"_fine_A_saddle");
+    	configFile.initializeCoordinates(boxMin);
+    	writer = new WriteConfiguration();
+    	writer.setConfName(file+"_A_minimum");
+    	
+    	if(normalD==true){
+    		// Read in coordinates for opposite boxMin atom locations
+    		ConfigurationFile configFile1 = new ConfigurationFile(file+"_fine_B_saddle");
+        	configFile1.initializeCoordinates(boxMin);
+        	writer.setConfName(file+"_B_minimum");
+    	}
+    		
 		// Atom list for movable and offset atoms
 		list = new AtomArrayList();
         listMin = new AtomArrayList();
 		
         for(int i=0; i<movableSpecies.length; i++){
-            list.addAll(box.getMoleculeList(movableSpecies[i]));
-            listMin.addAll(boxMin.getMoleculeList(movableSpecies[i]));
-        }
-		
-        //Offset replica
-        for(int i=0; i<N.length; i++){
-            ((IAtomPositioned)listMin.getAtom(i)).getPosition().PEa1Tv1(deltaR, N[i]);
-        }
-        
-        
-        try{
-            fileWriter = new FileWriter(ElectronVolt.UNIT.fromSim(energyBox0.getDataAsScalar())+"_min-path");
-            fileWriter.write(ElectronVolt.UNIT.fromSim(energyBox0.getDataAsScalar())+"\n");
-      }catch(IOException e) {
-          
-      }
-        
+            AtomSet molecules = box.getMoleculeList(movableSpecies[i]);
+            for (int j=0; j<molecules.getAtomCount(); j++) {
+                list.add(((IMolecule)molecules.getAtom(j)).getChildList().getAtom(0));
+                listMin.add(((IMolecule)molecules.getAtom(j)).getChildList().getAtom(0));
+            }
+        }     
 		
         // Write out initial configuration
-        System.out.println("----Dimer Minimum Energy Path");
+        System.out.println(file+" ***Dimer Minima Search***");
         System.out.println(N[0].x(0)+"     "+N[0].x(1)+"     "+N[0].x(2));       
-        System.out.println(((IAtomPositioned)list.getAtom(0)).getPosition().x(0)+"     "+((IAtomPositioned)list.getAtom(0)).getPosition().x(1)+"     "+((IAtomPositioned)list.getAtom(0)).getPosition().x(2)
-                +"     "+((IAtomPositioned)listMin.getAtom(0)).getPosition().x(0)+"     "+((IAtomPositioned)listMin.getAtom(0)).getPosition().x(1)+"     "+((IAtomPositioned)listMin.getAtom(0)).getPosition().x(2));
+        System.out.println(((IAtomPositioned)list.getAtom(0)).getPosition().x(0)+"     "+((IAtomPositioned)list.getAtom(0)).getPosition().x(1)+"     "+((IAtomPositioned)list.getAtom(0)).getPosition().x(2));
         
 		// Calculate F's
 		dimerForces(Fmin, F0, Fmin2);
@@ -331,8 +324,7 @@ public class IntegratorDimerMin extends IntegratorBox implements AgentSource {
 			
 			if(Fprimerot>0){deltaTheta = deltaTheta + Math.PI/2.0;}
 			
-			double energy = (energyBox0.getDataAsScalar()+energyBoxMin.getDataAsScalar());
-            System.out.println(energy+"    "+Frot+"     "+Fprimerot+"     "+deltaTheta);
+            //System.out.println(energy+"    "+Frot+"     "+Fprimerot+"     "+deltaTheta);
             
              // Check deltaTheta vs. dTheta and adjust step size
             if (deltaTheta < 0){
@@ -409,7 +401,7 @@ public class IntegratorDimerMin extends IntegratorBox implements AgentSource {
 		System.out.println(ElectronVolt.UNIT.fromSim(e0));
 		
 		if(e0 < eMin){ 
-		    System.out.println("Minimum Energy Found");
+		    System.out.println(file+" +++Dimer Minimum Found+++");
 			System.out.println("Box0 = "+ElectronVolt.UNIT.fromSim(e0));
 			System.out.println("BoxMin = "+ElectronVolt.UNIT.fromSim(eMin));
 			
@@ -418,13 +410,10 @@ public class IntegratorDimerMin extends IntegratorBox implements AgentSource {
 	            }catch(IOException e) {
 	                System.err.println("Cannot open file, caught IOException: " + e.getMessage());
 	            }
-			
-			WriteConfiguration writer = new WriteConfiguration();
-            writer.setConfName(energyBox0.getDataAsScalar()+"_minimum");
+	            
             writer.setBox(box);
             writer.actionPerformed();
-			
-            System.exit(1);
+            activityIntegrate.setMaxSteps(0);
 		}
 		
 	}
@@ -449,7 +438,7 @@ public class IntegratorDimerMin extends IntegratorBox implements AgentSource {
             N[i].TE(mag);
         }
 	}
-		
+			
 	// Reset forces in boxes 0 and min, call calculate, and copy over new forces
 	protected void dimerForces(IVector [] aF1, IVector [] aF, IVector [] aF2){
 		force0.reset();
@@ -497,6 +486,10 @@ public class IntegratorDimerMin extends IntegratorBox implements AgentSource {
 			aFperp[i].TE(1.0/deltaR);
 		}
 
+	}
+	
+	public void setActivityIntegrate(ActivityIntegrate ai){
+		activityIntegrate = ai;
 	}
 	
 	public Class getAgentClass() {
