@@ -8,17 +8,29 @@ import etomica.action.WriteConfigurationP2DLPOLY;
 import etomica.atom.AtomSet;
 import etomica.box.Box;
 import etomica.space.Space;
+import etomica.units.Dimension;
+import etomica.units.Length;
 
-public class P2DLPOLY extends Potential{
+public class P2DLPOLY implements IPotential {
 	
 	public P2DLPOLY(Space space){
-		super(2, space);
+	    this.space = space;
        	configP2DLPOLY = new WriteConfigurationP2DLPOLY();
     	configP2DLPOLY.setConfName("CONFIG");
+	}
 
-    
+	public Space getSpace() {
+	    return space;
 	}
 	
+	public int nBody() {
+	    return 2;
+	}
+	
+	public Dimension getRangeDimension() {
+	    return Length.DIMENSION;
+	}
+
 	public double energy(AtomSet atoms) {
 
 		configP2DLPOLY.setMolecule(atoms.getAtom(0), atoms.getAtom(1));
@@ -65,5 +77,6 @@ public class P2DLPOLY extends Potential{
 
 	private Box box;
 	private WriteConfigurationP2DLPOLY configP2DLPOLY;
+	protected final Space space;
 
 }
